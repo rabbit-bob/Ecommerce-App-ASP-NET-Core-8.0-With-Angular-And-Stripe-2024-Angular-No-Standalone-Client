@@ -4,7 +4,9 @@
     <app-nav-bar></app-nav-bar>
 
     <!-- body -->
-
+    <ul>
+        <li *ngFor="let item of products">{{ item.name }}</li>
+    </ul>
 
     <!-- footer -->
 </div>
