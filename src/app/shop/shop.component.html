@@ -30,8 +30,10 @@
                     </div>
                 </div>
             </div>
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" *ngFor="let item of products">
-              <app-shop-item></app-shop-item>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+              <div class="col" *ngFor="let item of products">
+                <app-shop-item [product]="item"></app-shop-item>
+              </div>
             </div>
         </section>
     </div>
