@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IPagination } from '../shared/Models/IPagination';
+import { ICategory } from '../shared/Models/ICategory';
 
 @Injectable({
   providedIn: 'root'
@@ -12,5 +13,9 @@ export class ShopService {
 
   getProduct() {
     return this.http.get<IPagination>(this.baseURL + 'Products/get-all-products');
+  }
+
+  getCategory() {
+    return this.http.get<ICategory[]>(this.baseURL + 'Categories/get-all-categories');
   }
 }
