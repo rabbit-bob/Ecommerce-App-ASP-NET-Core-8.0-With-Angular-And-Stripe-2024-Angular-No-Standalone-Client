@@ -11,7 +11,11 @@
             <h6 class="text-danger my-3 filtering-heading">Category</h6>
             <ul class="list-group">
                 <li class="list-group-item" aria-current="true"
-                    *ngFor="let item of categories">
+                    *ngFor="let item of categories"
+                    [class.active]="item.id === categoryIdSelected"
+                    [value]="item.id"
+                    (click)="onCategorySelect(item.id)"
+                >
                     {{item.name}}
                 </li>
 
