@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IProduct } from '../shared/Models/IProduct';
 import { ShopService } from './shop.service';
 import { ICategory } from '../shared/Models/ICategory';
+import { ShopParams } from '../shared/Models/shopParams';
 
 @Component({
   selector: 'app-shop',
@@ -12,9 +13,10 @@ export class ShopComponent implements OnInit {
   
   categories: ICategory[] | undefined;
   products: IProduct[] | undefined;
-  
-  categoryIdSelected: number = 0;
-  sortSelect: string = 'Name';
+
+  shopParams = new ShopParams;
+  totalCount: number = 0;
+
   sortOptions = [
     { name: 'Name', value: 'Name' },
     { name: 'Price: Max-Min', value: 'PriceDesc' },
@@ -29,9 +31,12 @@ export class ShopComponent implements OnInit {
   }
   
   getProducts() {
-    this.shopService.getProduct(this.categoryIdSelected, this.sortSelect).subscribe(res => {
+    this.shopService.getProduct(this.shopParams).subscribe(res => {
       if (res && res.data) {
         this.products = res.data;
+        this.totalCount = res.count;
+        this.shopParams.pageNumber = res.pageNumber;
+        this.shopParams.pageSize = res.pageSize;
       } else {
         console.error('Response is null or does not contain data');
       }
@@ -45,13 +50,13 @@ export class ShopComponent implements OnInit {
   }
   
   onCategorySelect(categoryId: number) {
-    this.categoryIdSelected = categoryId;
+    this.shopParams.categoryId= categoryId;
     this.getProducts();
   }
 
   onSortSelect(sort: Event) {
     let sortValue = (sort.target as HTMLInputElement).value;
-    this.sortSelect = sortValue;
+    this.shopParams.sort = sortValue;
     this.getProducts();
   }
 }

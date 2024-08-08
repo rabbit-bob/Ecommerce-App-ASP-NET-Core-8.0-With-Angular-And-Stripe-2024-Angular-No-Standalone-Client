@@ -10,7 +10,7 @@
             <ul class="list-group">
                 <li class="list-group-item" aria-current="true"
                     *ngFor="let item of categories"
-                    [class.active]="item.id === categoryIdSelected"
+                    [class.active]="item.id === shopParams.categoryId"
                     [value]="item.id"
                     (click)="onCategorySelect(item.id)"
                 >
@@ -37,10 +37,18 @@
                 <app-shop-item [product]="item"></app-shop-item>
               </div>
             </div>
-            <pagination [boundaryLinks]="true" [totalItems]="77"
-                previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
-                 
-            </pagination>
+            <div class="d-flex justify-content-center mt-3">
+                <pagination 
+                    [boundaryLinks]="true" 
+                    [totalItems]="totalCount"
+                    previousText="&lsaquo;" 
+                    nextText="&rsaquo;" 
+                    firstText="&laquo;" 
+                    lastText="&raquo;"
+                >
+                     
+                </pagination>
+            </div>
         </section>
     </div>
 </div>
