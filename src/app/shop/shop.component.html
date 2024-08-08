@@ -39,7 +39,9 @@
             </div>
             <div class="d-flex justify-content-center mt-3">
                 <pagination 
+                    (pageChanged)="onPageChanged($event.page)"
                     [boundaryLinks]="true" 
+                    [itemsPerPage]="shopParams.pageSize"
                     [totalItems]="totalCount"
                     previousText="&lsaquo;" 
                     nextText="&rsaquo;" 

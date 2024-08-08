@@ -13,10 +13,10 @@ export class ShopComponent implements OnInit {
   
   categories: ICategory[] | undefined;
   products: IProduct[] | undefined;
-
+  
   shopParams = new ShopParams;
   totalCount: number = 0;
-
+  
   sortOptions = [
     { name: 'Name', value: 'Name' },
     { name: 'Price: Max-Min', value: 'PriceDesc' },
@@ -53,10 +53,15 @@ export class ShopComponent implements OnInit {
     this.shopParams.categoryId= categoryId;
     this.getProducts();
   }
-
+  
   onSortSelect(sort: Event) {
     let sortValue = (sort.target as HTMLInputElement).value;
     this.shopParams.sort = sortValue;
+    this.getProducts();
+  }
+
+  onPageChanged(event: any) {
+    this.shopParams.pageNumber = event;
     this.getProducts();
   }
 }

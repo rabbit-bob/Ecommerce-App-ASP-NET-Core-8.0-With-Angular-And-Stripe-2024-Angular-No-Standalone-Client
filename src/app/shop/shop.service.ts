@@ -15,12 +15,14 @@ export class ShopService {
 
   getProduct(shopParams: ShopParams) {
     let params = new HttpParams;
-    if (shopParams.categoryId) {
+    if (shopParams.categoryId != 0) {
       params = params.append('categoryId', shopParams.categoryId.toString());  
     }
-    if (shopParams.sort) {
-      params = params.append('sort', shopParams.sort);
-    }
+
+    params = params.append('sort', shopParams.sort);
+
+    params = params.append('pageNumber', shopParams.pageNumber);
+    params = params.append('pageSize', shopParams.pageSize);
 
     return this.http.get<IPagination>(this.baseURL + 'Products/get-all-products', {observe: 'response', params})
       .pipe(
