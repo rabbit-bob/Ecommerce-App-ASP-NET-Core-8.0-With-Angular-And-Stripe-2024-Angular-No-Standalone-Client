@@ -18,6 +18,9 @@ export class ShopService {
     if (shopParams.categoryId != 0) {
       params = params.append('categoryId', shopParams.categoryId.toString());  
     }
+    if (shopParams.search) {
+      params = params.append('search', shopParams.search);
+    }
 
     params = params.append('sort', shopParams.sort);
 
