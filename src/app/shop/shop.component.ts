@@ -51,7 +51,8 @@ export class ShopComponent implements OnInit {
   }
   
   onCategorySelect(categoryId: number) {
-    this.shopParams.categoryId= categoryId;
+    this.shopParams.categoryId = categoryId;
+    this.shopParams.pageNumber = 1;
     this.getProducts();
   }
   
@@ -62,8 +63,10 @@ export class ShopComponent implements OnInit {
   }
 
   onPageChanged(event: any) {
-    this.shopParams.pageNumber = event;
-    this.getProducts();
+    if (this.shopParams.pageNumber !== event) {
+      this.shopParams.pageNumber = event;
+      this.getProducts();      
+    }
   }
 
   onSearch() {
