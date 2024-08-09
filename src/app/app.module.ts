@@ -6,6 +6,7 @@ import { CoreModule } from './core/core.module';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ShopModule } from './shop/shop.module';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { HomeModule } from './home/home.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
     BrowserModule,
     AppRoutingModule,
     CoreModule,
-    ShopModule
+    ShopModule,
+    HomeModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi())
