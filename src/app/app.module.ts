@@ -6,12 +6,14 @@ import { CoreModule } from './core/core.module';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HomeModule } from './home/home.module';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
     CoreModule,
