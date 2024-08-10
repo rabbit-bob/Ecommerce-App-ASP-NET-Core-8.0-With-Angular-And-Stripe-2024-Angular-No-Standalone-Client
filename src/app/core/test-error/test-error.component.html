@@ -3,4 +3,11 @@
     <button (click)="onGet404Error()" class="btn btn-outline-primary">Test 404 - Not Found Error</button>
     <button (click)="onGet400Error()" class="btn btn-outline-primary mx-3">Test 400 - Bad Request Error</button>
     <button (click)="onGet400ValidationError()" class="btn btn-outline-primary">Test 400 - Bad Request Validation Error</button>
+
+    <!-- Error Area -->
+     <div class="row" *ngIf="validationErrors">
+        <ol class="text-danger" style="font-weight: bold;">
+            <li *ngFor="let item of validationErrors">{{item}}</li>
+        </ol>
+     </div>
 </div>

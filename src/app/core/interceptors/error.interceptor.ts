@@ -13,10 +13,14 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((err: HttpErrorResponse) => {
       if (err) {
         if (err.status === 400) {
-          toast.error(err.error.message, err.status.toString())
+          if (err.error.errors) {
+            throw err.error;
+          } else {
+            toast.error(err.error.message, err.status.toString());
+          }
         }
         if (err.status === 401) {
-          toast.error(err.error.message, err.status.toString())
+          toast.error(err.error.message, err.status.toString());
         }
         if (err.status === 404) {
           //

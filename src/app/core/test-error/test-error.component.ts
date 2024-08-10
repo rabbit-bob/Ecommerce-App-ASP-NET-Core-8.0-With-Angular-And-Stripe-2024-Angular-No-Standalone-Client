@@ -10,6 +10,7 @@ import { environment } from '../../../environments/environment.development';
 export class TestErrorComponent implements OnInit {
 
   baseURL: string = environment.baseURL;
+  validationErrors : any;
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -40,7 +41,7 @@ export class TestErrorComponent implements OnInit {
   onGet400ValidationError() {
     this.http.get(this.baseURL + 'ErrorLogs/bad-request/three').subscribe({
       next: (next) => console.info(next),
-      error: (err) => console.error(err)
+      error: (err) => this.validationErrors = err.errors
     });
   }
 }
