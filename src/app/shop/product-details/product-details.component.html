@@ -1,3 +1,23 @@
-<div *ngIf="product">
-    <h3>{{product.name}}</h3>
+<div class="row" *ngIf="product">
+    <div class="col-6">
+        <img src="{{product.productPicture}}" class="w-100" alt="{{product.name}}">
+    </div>
+    <div class="col-6">
+        <h3>{{product.name}}</h3>
+        <p>{{product.price | currency}}</p>
+
+        <div class="d-flex justify-content-start align-items-center">
+            <!-- + | - | AddBtn -->
+             <i class="fa fa-minus text-danger mx-2" style="font-weight: bold; cursor: pointer;"></i>
+             <span style="font-weight: bold;">5</span>
+             <i class="fa fa-plus text-danger mx-2" style="font-weight: bold; cursor: pointer;"></i>
+             <button class="btn btn-outline-danger btn-lg ml-5">Add To Cart</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <h3>Description</h3>
+            <p>{{product.description}}</p>
+        </div>
+    </div>
 </div>
