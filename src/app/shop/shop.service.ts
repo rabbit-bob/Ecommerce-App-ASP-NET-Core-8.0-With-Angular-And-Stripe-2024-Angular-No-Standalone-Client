@@ -4,6 +4,7 @@ import { IPagination } from '../shared/Models/IPagination';
 import { ICategory } from '../shared/Models/ICategory';
 import { map } from 'rxjs';
 import { ShopParams } from '../shared/Models/shopParams';
+import { IProduct } from '../shared/Models/IProduct';
 
 @Injectable({
   providedIn: 'root'
@@ -37,5 +38,9 @@ export class ShopService {
 
   getCategory() {
     return this.http.get<ICategory[]>(this.baseURL + 'Categories/get-all-categories');
+  }
+
+  getProductById(id: number) {
+    return this.http.get<IProduct>(this.baseURL + 'Products/get-product-by-id/' + id);
   }
 }
