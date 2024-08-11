@@ -5,7 +5,7 @@
     <button (click)="onGet400ValidationError()" class="btn btn-outline-primary">Test 400 - Bad Request Validation Error</button>
 
     <!-- Error Area -->
-     <div class="row" *ngIf="validationErrors">
+     <div class="row mt-5" *ngIf="validationErrors">
         <ol class="text-danger" style="font-weight: bold;">
             <li *ngFor="let item of validationErrors">{{item}}</li>
         </ol>
