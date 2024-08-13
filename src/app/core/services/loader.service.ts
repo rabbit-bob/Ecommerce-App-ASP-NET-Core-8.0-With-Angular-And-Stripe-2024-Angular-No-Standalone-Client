@@ -14,7 +14,7 @@ export class LoaderService {
     this.spinnerService.show(undefined, {
       type: "ball-spin-fade",
       color: "#e30808",
-      bdColor: "rgba(0,0,0,0.6)",
+      bdColor: "rgba(255,255,255,0.7)",
       size: "medium"
     });
   }

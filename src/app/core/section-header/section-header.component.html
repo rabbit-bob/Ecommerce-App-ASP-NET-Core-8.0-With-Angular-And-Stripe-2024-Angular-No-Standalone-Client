@@ -1,15 +1,17 @@
-<section class="pb-3" style="background-color: #817e7e08;">
-    <div class="container">
-        <div class="row">
-            <div class="d-flex align-items-center">
-                <div class="col-9">
-                    <h1>Header Title</h1>
-                </div>
-                <div class="col-3">
-                    <!-- Breadcrumbs -->
-                    <xng-breadcrumb></xng-breadcrumb>
+<div *ngIf="(breadcrumb$ | async) as breadcrumbs">
+    <section class="pb-3" style="background-color: #817e7e08;" *ngIf="breadcrumbs.length > 0 && breadcrumbs[breadcrumbs.length - 1].label !== 'Home'">
+        <div class="container">
+            <div class="row">
+                <div class="d-flex align-items-center">
+                    <div class="col-9">
+                        <h2>{{breadcrumbs.length > 0 && breadcrumbs[breadcrumbs.length - 1].label | uppercase}}</h2>
+                    </div>
+                    <div class="col-3">
+                        <!-- Breadcrumbs -->
+                        <xng-breadcrumb></xng-breadcrumb>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
