@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        <section class="col-3">
+        <section class="col-3" *ngIf="categories">
             <h6 class="text-danger my-3 filtering-heading">Sorting</h6>
             <select class="form-select" aria-label="Default select example" (change)="onSortSelect($event)">
                 <option *ngFor="let item of sortOptions" [value]="item.value">{{item.name}}</option>
@@ -19,7 +19,7 @@
 
             </ul>
         </section>
-        <section class="col-9">
+        <section class="col-9" *ngIf="products">
             <div class="d-flex justify-content-between align-items-center pb-4 pt-4">
 
                 <!-- Paging-Header -->
