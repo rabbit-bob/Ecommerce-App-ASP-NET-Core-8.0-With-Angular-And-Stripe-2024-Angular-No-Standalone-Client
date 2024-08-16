@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IProduct } from '../../shared/Models/IProduct';
+import { BasketService } from '../../basket/basket.service';
 
 @Component({
   selector: 'app-shop-item',
@@ -8,11 +9,18 @@ import { IProduct } from '../../shared/Models/IProduct';
 })
 export class ShopItemComponent implements OnInit {
   @Input() product: IProduct | undefined;
-
-  constructor() { }
-
+  
+  constructor(private basketService: BasketService) { }
+  
   ngOnInit(): void {
-
+    
   }
-
+  
+  addItemToBasket() {
+    if (this.product) {
+      this.basketService.addItemToBasket(this.product);
+    } else {
+      console.error('Product is undefined');
+    }
+  }
 }
