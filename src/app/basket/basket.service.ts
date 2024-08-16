@@ -73,8 +73,17 @@ export class BasketService {
 
   private createBasket(): IBasket {
     const basket = new Basket();
-    localStorage.setItem('basket_id', basket.id);
+    this.storeBasket(basket);
     return basket;
+  }
+
+  private storeBasket(basket: IBasket) {
+    localStorage.setItem('basket_id', JSON.stringify(basket));
+  }
+
+  private getLocalBasket(): IBasket | null {
+    const basketJson = localStorage.getItem('basket');
+    return basketJson ? JSON.parse(basketJson) : null;
   }
 
   private mapProductItemToBasketItem(item: IProduct, quantity: number): IBasketItem {
