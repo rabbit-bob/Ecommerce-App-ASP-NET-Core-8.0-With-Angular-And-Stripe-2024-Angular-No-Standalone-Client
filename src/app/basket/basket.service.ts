@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
@@ -11,7 +12,11 @@ import { IProduct } from '../shared/Models/IProduct';
 export class BasketService {
 
   baseURL: string = environment.baseURL;
-  private basketSource = new BehaviorSubject<IBasket | null>(null);
+  private basketSource = new BehaviorSubject<IBasket>({
+    id: '',
+    basketItems: []
+  });
+  
   basket$ = this.basketSource.asObservable();
 
   constructor(private http: HttpClient) {
@@ -25,7 +30,7 @@ export class BasketService {
     return this.http.get<IBasket>(`${this.baseURL}Baskets/get-basket-item/${id}`).pipe(
       map((basket: IBasket) => {
         this.basketSource.next(basket);
-        this.storeBasketId(basket.id);
+        console.info(this.getCurrentBasketValue());
       })
     );
   }
@@ -34,7 +39,8 @@ export class BasketService {
     this.http.post<IBasket>(`${this.baseURL}Baskets/update-basket`, basket).subscribe({
       next: (res: IBasket) => {
         this.basketSource.next(res);
-        this.storeBasketId(res.id);
+        console.log(res);
+        localStorage.setItem('basket_id', basket.id);
       },
       error: (err) => {
         console.error(err);
@@ -47,15 +53,11 @@ export class BasketService {
   }
 
   addItemToBasket(item: IProduct, quantity: number = 1) {
-    let basket = this.getCurrentBasketValue();
-
-    if (!basket) {
-      basket = this.createBasket();
-    }
-
     const itemToAdd: IBasketItem = this.mapProductItemToBasketItem(item, quantity);
+    const basket = this.getCurrentBasketValue() ?? this.createBasket();
+
     basket.basketItems = this.addOrUpdate(basket.basketItems, itemToAdd, quantity);
-    this.setBasket(basket);
+    return this.setBasket(basket);
   }
 
   private addOrUpdate(basketItems: IBasketItem[], itemToAdd: IBasketItem, quantity: number): IBasketItem[] {
@@ -72,12 +74,7 @@ export class BasketService {
   private createBasket(): IBasket {
     const basket = new Basket();
     localStorage.setItem('basket_id', basket.id);
-    this.basketSource.next(basket);
     return basket;
-  }
-
-  private storeBasketId(id: string) {
-    localStorage.setItem('basket_id', id);
   }
 
   private mapProductItemToBasketItem(item: IProduct, quantity: number): IBasketItem {
@@ -91,23 +88,25 @@ export class BasketService {
     };
   }
 
-  public initializeBasket() {
-    const basketId = localStorage.getItem('basket_id');
 
-    if (basketId) {
-      this.getBasket(basketId).subscribe({
-        next: (basket) => {
-          console.log('Basket has been loaded:', basket);
-        },
-        error: (err) => {
-          console.error('Basket could not be loaded:', err);
-        }
-      });
-    } else {
-      this.createBasket();
-      console.log('New basket has been created');
+  public initializeBasket() {
+    let basketId = localStorage.getItem('basket_id');
+  
+    if (!basketId) {
+      basketId = uuidv4();
+      localStorage.setItem('basket_id', basketId);
     }
+  
+    this.getBasket(basketId).subscribe({
+      next: (basket) => {
+        console.log('Basket has been loaded - InitialBasket:', basket);
+      },
+      error: (err) => {
+        console.error('Basket could not be loaded:', err);
+      }
+    });
   }
+  
 
 }
 
