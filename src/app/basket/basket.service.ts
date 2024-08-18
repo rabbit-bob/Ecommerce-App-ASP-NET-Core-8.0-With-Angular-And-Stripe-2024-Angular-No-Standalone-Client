@@ -34,6 +34,59 @@ export class BasketService {
 
   basketTotal$ = this.basketTotalSource.asObservable();
 
+  incrementBasketItemQuantity(item: IBasketItem) {
+    const basket = this.getCurrentBasketValue();
+    const itemIndex = basket!.basketItems.findIndex(x => x.id === item.id);
+    basket!.basketItems[itemIndex].quantity++;
+    this.setBasket(basket!);
+  }
+
+  decrementBasketItemQuantity(item: IBasketItem) {
+    const basket = this.getCurrentBasketValue();
+    const itemIndex = basket!.basketItems.findIndex(x => x.id === item.id);
+
+    if (basket!.basketItems[itemIndex].quantity > 1) {
+      basket!.basketItems[itemIndex].quantity--;
+      this.setBasket(basket!);
+    } else {
+      this.removeItemFromBasket(item);
+    }
+  }
+
+  removeItemFromBasket(item: IBasketItem) {
+    const basket = this.getCurrentBasketValue();
+    if (basket!.basketItems.some(x => x.id === item.id)) {
+      basket!.basketItems = basket!.basketItems.filter(x => x.id !== item.id);
+      if (basket!.basketItems.length > 0) {
+        this.setBasket(basket!);
+      } else {
+        this.deleteBasket(basket!);
+      }
+    }
+    throw new Error('Method not implemented.');
+  }
+  deleteBasket(basket: IBasket) {
+    return this.http.delete(`${this.baseURL}Baskets/delete-basket-item/${basket.id}`)
+      .subscribe({
+        next: () => {
+          this.basketSource.next({
+            id: '',
+            basketItems: []
+          });
+          this.basketTotalSource.next({
+            shipping: 0,
+            subtotal: 0,
+            total: 0
+          });
+          localStorage.removeItem('basket_id');
+        },
+        error: (err) => {
+          console.error(err);
+        }
+      })
+    throw new Error('Method not implemented.');
+  }
+
   private calculateTotal() {
     const basket = this.getCurrentBasketValue();
     const shipping = 0;
