@@ -8,7 +8,7 @@
             <div class="table-responsive">
                 <table class="table">
                     <thead class="bg-light m-2">
-                        <tr class="text-uppercase py-2">
+                        <tr class="text-uppercase py-4">
                             <th scope="col">Product</th>
                             <th scope="col">Price</th>
                             <th scope="col">Quantity</th>
@@ -21,7 +21,7 @@
                             <th scope="row">
                                 <div class="p-2">
                                     <img src="{{item.productPicture}}" alt="{{item.productName}}" style="max-height: 70px;">
-                                    <div class="mr-3 d-inline-block align-middle">
+                                    <div class="mx-3 d-inline-block align-middle">
                                         <h6 class="mb-0">
                                             <a routerLink="/shop/{{item.id}}" class="text-danger" style="text-decoration: none;">{{item.productName}}</a>
                                         </h6>
@@ -50,6 +50,12 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 offset-6">
+                <app-order-summary></app-order-summary>
+                <a routerLink="/checkout" class="btn btn-outline-success d-md-block">Proceed to checkout</a>
             </div>
         </div>
     </div>
