@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BasketService } from './basket.service';
 import { filter, Observable } from 'rxjs';
-import { IBasket } from '../shared/Models/Basket';
+import { IBasket, IBasketItem, IBasketTotals } from '../shared/Models/Basket';
 
 @Component({
   selector: 'app-basket',
@@ -17,6 +17,18 @@ export class BasketComponent implements OnInit {
     this.baskets$ = this.basketService.basket$.pipe(
       filter((basket): basket is IBasket => basket !== null)
     );
+  }
+
+  incrementBasketItemQuantity(item: IBasketItem) {
+    this.basketService.incrementBasketItemQuantity(item);
+  }
+
+  decrementBasketItemQuantity(item: IBasketItem) {
+    this.basketService.decrementBasketItemQuantity(item);
+  }
+
+  removeBasketItem(item: IBasketItem) {
+    this.basketService.removeItemFromBasket(item);
   }
 
 }
