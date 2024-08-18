@@ -1,1 +1,11 @@
-<p>basket works!</p>
+<div *ngIf="(baskets$ | async) === null">
+    <h3 class="text-center text-danger">There is no Items added yet!</h3>
+</div>
+
+<div *ngIf="(baskets$ | async) as basket">
+    <ol>
+        <li *ngFor="let item of basket.basketItems">
+            {{item.productName}} - {{item.quantity}}
+        </li>
+    </ol>
+</div>
