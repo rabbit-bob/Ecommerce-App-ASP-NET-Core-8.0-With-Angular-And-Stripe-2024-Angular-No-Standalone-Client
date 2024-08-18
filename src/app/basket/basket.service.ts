@@ -36,35 +36,50 @@ export class BasketService {
 
   incrementBasketItemQuantity(item: IBasketItem) {
     const basket = this.getCurrentBasketValue();
-    const itemIndex = basket!.basketItems.findIndex(x => x.id === item.id);
-    basket!.basketItems[itemIndex].quantity++;
-    this.setBasket(basket!);
+    if (basket) {
+      const itemIndex = basket.basketItems.findIndex(x => x.id === item.id);
+      if (itemIndex !== -1) {
+        basket.basketItems[itemIndex].quantity++;
+        this.setBasket(basket);
+      }
+    } else {
+      console.error('Basket is null');
+    }
   }
-
+  
   decrementBasketItemQuantity(item: IBasketItem) {
     const basket = this.getCurrentBasketValue();
-    const itemIndex = basket!.basketItems.findIndex(x => x.id === item.id);
-
-    if (basket!.basketItems[itemIndex].quantity > 1) {
-      basket!.basketItems[itemIndex].quantity--;
-      this.setBasket(basket!);
+    if (basket) {
+      const itemIndex = basket.basketItems.findIndex(x => x.id === item.id);
+      if (itemIndex !== -1) {
+        if (basket.basketItems[itemIndex].quantity > 1) {
+          basket.basketItems[itemIndex].quantity--;
+          this.setBasket(basket);
+        } else {
+          this.removeItemFromBasket(item);
+        }
+      }
     } else {
-      this.removeItemFromBasket(item);
+      console.error('Basket is null');
     }
   }
-
+  
   removeItemFromBasket(item: IBasketItem) {
     const basket = this.getCurrentBasketValue();
-    if (basket!.basketItems.some(x => x.id === item.id)) {
-      basket!.basketItems = basket!.basketItems.filter(x => x.id !== item.id);
-      if (basket!.basketItems.length > 0) {
-        this.setBasket(basket!);
-      } else {
-        this.deleteBasket(basket!);
+    if (basket) {
+      if (basket.basketItems.some(x => x.id === item.id)) {
+        basket.basketItems = basket.basketItems.filter(x => x.id !== item.id);
+        if (basket.basketItems.length > 0) {
+          this.setBasket(basket);
+        } else {
+          this.deleteBasket(basket);
+        }
       }
+    } else {
+      console.error('Basket is null');
     }
-    throw new Error('Method not implemented.');
   }
+  
   deleteBasket(basket: IBasket) {
     return this.http.delete(`${this.baseURL}Baskets/delete-basket-item/${basket.id}`)
       .subscribe({
@@ -83,9 +98,9 @@ export class BasketService {
         error: (err) => {
           console.error(err);
         }
-      })
-    throw new Error('Method not implemented.');
+      });
   }
+  
 
   private calculateTotal() {
     const basket = this.getCurrentBasketValue();
