@@ -22,3 +22,9 @@ export class Basket implements IBasket {
       this.id = uuidv4();
     }
 }
+
+export interface IBasketTotals {
+  shipping: number;
+  subtotal: number;
+  total: number;
+}
