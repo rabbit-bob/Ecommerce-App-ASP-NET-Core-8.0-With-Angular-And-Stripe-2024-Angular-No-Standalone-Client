@@ -4,6 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { TestErrorComponent } from './core/test-error/test-error.component';
 import { NotFoundComponent } from './core/not-found/not-found.component';
 import { ServerErrorComponent } from './core/server-error/server-error.component';
+import { skip } from 'rxjs';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, data: { breadcrumb: 'Home' } },
@@ -24,6 +25,11 @@ const routes: Routes = [
     path: 'checkout', 
     loadChildren: () => import('./checkout/checkout.module').then(m => m.CheckoutModule),
     data: { breadcrumb: 'Checkout' } 
+  },
+  {
+    path: 'account', 
+    loadChildren: () => import('./account/account.module').then(m => m.AccountModule),
+    data: { breadcrumb: {skip : true} } 
   },
   { path: '**', redirectTo: 'not-found', pathMatch: 'full' }
 ];
