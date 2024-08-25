@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-
 /**
  * Service managing operations related to user accounts.
  */

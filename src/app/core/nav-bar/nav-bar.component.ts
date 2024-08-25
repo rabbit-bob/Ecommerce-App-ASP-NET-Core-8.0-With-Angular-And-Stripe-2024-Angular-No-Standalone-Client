@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BasketService } from '../../basket/basket.service';
 import { filter, Observable } from 'rxjs';
-import { IBasket } from '../../shared/Models/Basket';
+import { IBasket } from '../../shared/models/basket';
 
 @Component({
   selector: 'app-nav-bar',
