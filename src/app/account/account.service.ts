@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { BehaviorSubject, map } from 'rxjs';
-import { IUser } from '../shared/models/user'; // Importing IUser interface for user details
+import { IUser } from '../shared/models/user';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 /**
  * Service managing operations related to user accounts.
@@ -25,8 +26,11 @@ export class AccountService {
   // Observable stream of the current user's state
   currentUser$ = this.currentUser.asObservable();
 
-  // Injecting HttpClient to make HTTP requests to the API
-  constructor(private http: HttpClient) { }
+  /**
+   * Injecting HttpClient to make HTTP requests to the API.
+   * Injecting Router to handle navigation.
+   */
+  constructor(private http: HttpClient, private router: Router) { }
 
   /**
    * Authenticates a user with the provided credentials.
@@ -76,6 +80,18 @@ export class AccountService {
       displayName: '',
       token: ''
     });
+
+    // Navigate to the home page after logging out
+    this.router.navigateByUrl('/');
+  }
+
+  /**
+   * Checks if an email address is already registered.
+   * @param email The email address to check.
+   * @returns An observable indicating whether the email exists.
+   */
+  checkEmailExist(email: string) {
+    this.http.get(this.baseURL + 'Accounts/check-email-exist?email='+ email);
   }
 }
 
