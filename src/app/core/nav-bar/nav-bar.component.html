@@ -27,8 +27,20 @@
         <a routerLink="/account/register" class="btn btn-danger">Sign-up</a>
       </div>
       <div *ngIf="(currentUser$ | async) as user">
-        <p *ngIf="user?.displayName">Welcome, {{user.displayName}}</p>
-        <p *ngIf="!user?.displayName">User data not available</p>
+        <div class="btn-group ml-3 mr-5" dropdown>
+          <a id="button-basic" dropdownToggle type="button" class="dropdown-toggle"
+                  aria-controls="dropdown-basic" style="text-decoration: none; cursor: pointer;" *ngIf="user?.displayName">
+                  <span class="caret" style="font-weight: bold;">Welcome, {{user.displayName}}</span>
+          </a>
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+              role="menu" aria-labelledby="button-basic">
+            <li role="menuitem"><a class="dropdown-item" routerLink="/basket"><i class="fa fa-shopping-cart mx-1"></i>Basket</a></li>
+            <li role="menuitem"><a class="dropdown-item" routerLink="/orders"><i class="fa fa-history mx-1"></i>Orders</a></li>
+            <li class="divider dropdown-divider"></li>
+            <li role="menuitem" (click)="logout()"><a class="dropdown-item"><i class="fa fa-sign-out mx-1"></i>Logout</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </header>

@@ -6,6 +6,7 @@ import { PagerComponent } from './components/pager/pager.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { OrderSummaryComponent } from './components/order-summary/order-summary.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 /**
  * Shared module that bundles commonly used components and modules across the application.
@@ -20,6 +21,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,                    // Common Angular directives
     PaginationModule.forRoot(),      // Pagination module for page navigation
     CarouselModule.forRoot(),        // Carousel module for image sliders
+    BsDropdownModule.forRoot(),      // Initializing BsDropdownModule with forRoot for root module configuration
     ReactiveFormsModule              // Reactive forms module for form handling
   ],
   exports: [
@@ -28,7 +30,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     PagerComponent,          // Exporting for usage in other modules
     CarouselModule,          // Exporting for usage in other modules
     OrderSummaryComponent,   // Exporting for usage in other modules
-    ReactiveFormsModule      // Exporting Reactive Forms module for usage in other modules
+    ReactiveFormsModule,     // Exporting Reactive Forms module for usage in other modules
+    BsDropdownModule         // Exporting BsDropdownModule to make it available throughout the app
   ]
 })
 export class SharedModule { }
