@@ -13,20 +13,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.basketService.initializeBasket();
-    this.loadCurrentUser();
-  }
-
-  loadCurrentUser() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.accountService.loadCurrentUser(token).subscribe({
-        next: () => {
-          console.log('loaded successfully')
-        },
-        error: (err) => {
-          console.error(err)
-        }
-      });      
-    }
+    this.accountService.initializeCurrentUser();
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { IUser } from '../shared/models/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -41,7 +41,7 @@ export class AccountService {
    * Returns the current user value from BehaviorSubject.
    * This method provides direct access to the user data stored in the currentUser BehaviorSubject.
    */
-  getCurrentUserValue() {
+  getCurrentUserValue(): IUser | null {
     return this.currentUser.value;
   }
 
@@ -50,18 +50,23 @@ export class AccountService {
    * @param token - The JWT token used for authentication in the Authorization header.
    * This method makes an HTTP GET request to fetch the current user data and updates the BehaviorSubject.
    */
-  loadCurrentUser(token: string) {
+  loadCurrentUser(token: string): Observable<IUser | null> {
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<IUser>(this._baseURL + 'Accounts/get-current-user', {headers}).pipe(
+    return this.http.get<IUser>(`${this._baseURL}Accounts/get-current-user`, { headers }).pipe(
       map((user: IUser) => {
         if (user) {
+          // Store the token in localStorage for future requests.
           localStorage.setItem('token', user.token);
+          // Update the current user BehaviorSubject with the fetched user data.
           this.currentUser.next(user);
+          return user;
+        } else {
+          return null;
         }
       })
-    )
+    );
   }
 
   /**
@@ -82,6 +87,24 @@ export class AccountService {
         }
       })
     );
+  }
+  
+  /**
+   * Initializes the current user by checking for a token in localStorage.
+   * If a token exists, it loads the user using the loadCurrentUser method.
+   */
+  initializeCurrentUser(): void {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.loadCurrentUser(token).subscribe({
+        next: () => {
+          console.log('User loaded successfully');
+        },
+        error: (err) => {
+          console.error('Error loading user:', err);
+        }
+      });
+    }
   }
 
   /**
