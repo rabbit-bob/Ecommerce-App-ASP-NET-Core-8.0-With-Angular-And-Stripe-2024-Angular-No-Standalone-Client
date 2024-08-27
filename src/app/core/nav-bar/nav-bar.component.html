@@ -22,7 +22,13 @@
         <i class="fa fa-shopping-cart text-dark fa-2x" style="margin-right: 30px;"></i>
         <div class="card-number" *ngIf="(basket$ | async) as basket">{{basket.basketItems.length}}</div>
       </a>
-      <a routerLink="/account/login" class="btn btn-outline-danger me-2">Login</a>
-      <a routerLink="/account/register" class="btn btn-danger">Sign-up</a>
+      <div *ngIf="(currentUser$ | async) === null">
+        <a routerLink="/account/login" class="btn btn-outline-danger me-2">Login</a>
+        <a routerLink="/account/register" class="btn btn-danger">Sign-up</a>
+      </div>
+      <div *ngIf="(currentUser$ | async) as user">
+        <p *ngIf="user?.displayName">Welcome, {{user.displayName}}</p>
+        <p *ngIf="!user?.displayName">User data not available</p>
+      </div>
     </div>
   </header>

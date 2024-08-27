@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AccountService } from '../account.service';
 
 /**
@@ -12,17 +12,18 @@ import { AccountService } from '../account.service';
 })
 export class LoginComponent implements OnInit {
 
-  // Reactive form for login input fields
+  // Reactive form for capturing login input fields
   loginForm: FormGroup;
 
   /**
-   * Injects the AccountService to handle login operations.
-   * Initializes the login form with form controls and validators.
+   * Constructor to inject dependencies and initialize the login form.
+   * @param fb FormBuilder instance for reactive form creation
+   * @param accountService AccountService for managing account operations
    */
-  constructor(private accountService: AccountService) {
-    this.loginForm = new FormGroup({
-      email: new FormControl('', Validators.required),    // Email input with validation
-      password: new FormControl('', Validators.required)  // Password input with validation
+  constructor(private fb: FormBuilder, private accountService: AccountService) {
+    this.loginForm = this.fb.group({
+      email: ['', Validators.required],    // Form control for email with required validator
+      password: ['', Validators.required]  // Form control for password with required validator
     });
   }
 
@@ -39,14 +40,11 @@ export class LoginComponent implements OnInit {
    * Submits the login credentials to the AccountService.
    */
   onSubmit() {
-    this.accountService.login(this.loginForm.value).subscribe({
-      next: () => {
-        console.log('Login success');  // Log message on successful login
-      },
-      error: (err) => {
-        console.error(err);  // Log error if login fails
-      }
-    });
+    if (this.loginForm.valid) {
+      this.accountService.login(this.loginForm.value).subscribe({
+        next: () => console.log('Login successful', this.loginForm.value),  // Log message on successful login
+        error: (err) => console.error('Login failed', err)  // Log error if login fails
+      });
+    }
   }
-
 }
