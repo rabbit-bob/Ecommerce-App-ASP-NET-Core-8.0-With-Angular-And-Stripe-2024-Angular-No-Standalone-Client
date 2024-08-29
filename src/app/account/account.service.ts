@@ -118,6 +118,7 @@ export class AccountService {
         if (user) {
           // Store the authentication token in local storage upon registration
           localStorage.setItem('token', user.token);
+          this.currentUser.next(user);
         }
       })
     );
