@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AccountService } from '../account.service';
+import { Router } from '@angular/router';
 import { PasswordValidator } from '../../shared/validators/password.validator';
 import { EmailValidator } from '../../shared/validators/email.validator';
-import { Router } from '@angular/router';
 
 /**
  * Component responsible for user registration functionality.
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss'],
+  styleUrl: './register.component.scss'
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup; // Reactive form for capturing registration input fields
