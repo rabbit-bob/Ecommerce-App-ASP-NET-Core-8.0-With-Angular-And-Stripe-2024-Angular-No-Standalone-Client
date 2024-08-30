@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AccountService } from '../account.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /**
  * Component responsible for user login functionality.
@@ -14,24 +14,27 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   // Reactive form for capturing login input fields
   loginForm: FormGroup;
+  returnUrl: string;
 
   /**
    * Constructor to inject dependencies and initialize the login form.
    * @param fb FormBuilder instance for reactive form creation
    * @param accountService AccountService for managing account operations
    * @param router Router for navigating on successful login
+   * @param activatedRoute ActivatedRoute for accessing route parameters
    */
   constructor(
     private fb: FormBuilder,
     private accountService: AccountService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
       email: [
         '',
         [
           Validators.required,
-          Validators.pattern('^\\w+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,3}$')
+          Validators.email  // Use Validators.email for better email validation
         ],
       ], // Form control for email with required validator
       password: [
@@ -42,17 +45,20 @@ export class LoginComponent implements OnInit {
         ],
       ], // Form control for password with required validator
     });
+    this.returnUrl = '';
   }
 
   // Lifecycle hook called on component initialization.
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.returnUrl = this.activatedRoute.snapshot.queryParams['returnUrl'] || '/shop'; // Removed incorrect dot before ['returnUrl']
+  }
 
   // Getter methods for form controls
-  get _email() {
+  get email() {
     return this.loginForm.get('email');
   }
 
-  get _password() {
+  get password() {
     return this.loginForm.get('password');
   }
 
@@ -64,7 +70,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       this.accountService.login(this.loginForm.value).subscribe({
         next: () => {
-          this.router.navigateByUrl('/shop'); // Navigate to the shop page after successful login
+          this.router.navigateByUrl(this.returnUrl); // Navigate to the returnUrl after successful login
           console.log('Login successful', this.loginForm.value); // Log message on successful login
         },
         error: (err) => console.error('Login failed', err), // Log error if login fails
@@ -72,4 +78,5 @@ export class LoginComponent implements OnInit {
     }
   }
 }
+
 

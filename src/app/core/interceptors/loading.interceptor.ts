@@ -11,7 +11,11 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const loadingService = inject(LoadingService);
   
   // URLs to exclude from showing the loading indicator
-  const skipUrls: string[] = ['/api/account/login', '/api/account/register'];
+  const skipUrls: string[] = [
+    // '/api/account/login', 
+    // '/api/account/register',
+    '/api/account/check-email-exist'
+  ];
 
   // Check if the request URL should be excluded from the loading indicator
   if (!skipUrls.some((url) => req.url.includes(url))) {

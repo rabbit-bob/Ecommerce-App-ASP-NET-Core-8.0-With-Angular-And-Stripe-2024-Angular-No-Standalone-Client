@@ -100,11 +100,11 @@
             formControlName="displayName"
             id="floatingInput"
             placeholder="Full Name"
-            [class.is-invalid]="_displayName?.invalid && _displayName?.touched"
-            [class.is-valid]="_displayName?.valid"
+            [class.is-invalid]="displayName?.invalid && displayName?.touched"
+            [class.is-valid]="displayName?.valid"
           />
-          <div *ngIf="_displayName?.invalid && _displayName?.touched">
-            <small class="text-danger" style="font-weight: bold;" *ngIf="_displayName?.errors?.['required']">* First name is required</small>
+          <div *ngIf="displayName?.invalid && displayName?.touched">
+            <small class="text-danger" style="font-weight: bold;" *ngIf="displayName?.errors?.['required']">* Full name is required</small>
           </div>
           <label for="floatingInput">Full Name</label>
         </div>
@@ -117,12 +117,12 @@
             formControlName="email"
             id="floatingInput"
             placeholder="name@example.com"
-            [class.is-invalid]="_email?.invalid && _email?.touched"
-            [class.is-valid]="_email?.valid"
+            [class.is-invalid]="email?.invalid && email?.touched"
+            [class.is-valid]="email?.valid"
           />
-          <div *ngIf="_email?.invalid && _email?.touched">
-            <small class="text-danger" style="font-weight: bold;" *ngIf="_email?.errors?.['required']">* Email is required</small>
-            <small class="text-danger" style="font-weight: bold;" *ngIf="_email?.errors?.['pattern']">* Invalid</small>
+          <div *ngIf="email?.invalid && email?.touched">
+            <small class="text-danger" style="font-weight: bold;" *ngIf="email?.errors?.['required']">* Email is required</small>
+            <small class="text-danger" style="font-weight: bold;" *ngIf="email?.errors?.['email']">* Invalid email</small>
           </div>
           <label for="floatingInput">Email address</label>
         </div>
@@ -135,12 +135,12 @@
             formControlName="password"
             id="floatingPassword"
             placeholder="Password"
-            [class.is-invalid]="_password?.invalid && _password?.touched"
-            [class.is-valid]="_password?.valid"
+            [class.is-invalid]="password?.invalid && password?.touched"
+            [class.is-valid]="password?.valid"
           />
-          <div *ngIf="_password?.invalid && _password?.touched">
-            <small class="text-danger" style="font-weight: bold;" *ngIf="_password?.errors?.['required']">* Password is required</small>
-            <small class="text-danger" style="font-weight: bold;" *ngIf="_password?.errors?.['pattern']">* Invalid</small>
+          <div *ngIf="password?.invalid && password?.touched">
+            <small class="text-danger" style="font-weight: bold;" *ngIf="password?.errors?.['required']">* Password is required</small>
+            <small class="text-danger" style="font-weight: bold;" *ngIf="password?.errors?.['pattern']">* Invalid password</small>
           </div>
           <label for="floatingPassword">Password</label>
         </div>
@@ -153,12 +153,12 @@
             formControlName="confirmPassword"
             id="floatingPassword"
             placeholder="Confirm Password"
-            [class.is-invalid]="_confirmPassword?.invalid && _confirmPassword?.touched"
-            [class.is-valid]="_confirmPassword?.valid"
+            [class.is-invalid]="confirmPassword?.invalid && confirmPassword?.touched"
+            [class.is-valid]="confirmPassword?.valid"
           />
-          <div *ngIf="_confirmPassword?.invalid && _confirmPassword?.touched">
-            <small class="text-danger" style="font-weight: bold;" *ngIf="_confirmPassword?.errors?.['required']">* Confirm Password is required</small>
-            <small class="text-danger" style="font-weight: bold;" *ngIf="_confirmPassword?.errors?.['pattern']">* Invalid</small>
+          <div *ngIf="confirmPassword?.invalid && confirmPassword?.touched">
+            <small class="text-danger" style="font-weight: bold;" *ngIf="confirmPassword?.errors?.['required']">* Confirm Password is required</small>
+            <small class="text-danger" style="font-weight: bold;" *ngIf="confirmPassword?.errors?.['pattern']">* Invalid password</small>
           </div>
           <label for="floatingPassword">Confirm Password</label>
         </div>
@@ -167,5 +167,6 @@
         <button class="w-100 btn btn-lg btn-primary" type="submit" [disabled]="registerForm.invalid">Register</button>
       </form>
     </main>
+    
 
   </div>

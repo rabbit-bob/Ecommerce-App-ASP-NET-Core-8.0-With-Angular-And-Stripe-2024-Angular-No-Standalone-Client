@@ -101,12 +101,12 @@
           formControlName="email"
           id="floatingInput"
           placeholder="name@example.com"
-          [class.is-invalid]="_email?.invalid && _email?.touched"
-          [class.is-valid]="_email?.valid"
+          [class.is-invalid]="email?.invalid && email?.touched"
+          [class.is-valid]="email?.valid"
         />
-        <div *ngIf="_email?.invalid && _email?.touched">
-          <small class="text-danger" style="font-weight: bold;" *ngIf="_email?.errors?.['required']">* Email is required</small>
-          <small class="text-danger" style="font-weight: bold;" *ngIf="_email?.errors?.['pattern']">* Invalid</small>
+        <div *ngIf="email?.invalid && email?.touched">
+          <small class="text-danger" style="font-weight: bold;" *ngIf="email?.errors?.['required']">* Email is required</small>
+          <small class="text-danger" style="font-weight: bold;" *ngIf="email?.errors?.['pattern']">* Invalid</small>
         </div>
         <label for="floatingInput">Email address</label>
       </div>
@@ -119,12 +119,12 @@
           formControlName="password"
           id="floatingPassword"
           placeholder="Password"
-          [class.is-invalid]="_password?.invalid && _password?.touched"
-          [class.is-valid]="_password?.valid"
+          [class.is-invalid]="password?.invalid && password?.touched"
+          [class.is-valid]="password?.valid"
         />
-        <div *ngIf="_password?.invalid && _password?.touched">
-          <small class="text-danger" style="font-weight: bold;" *ngIf="_password?.errors?.['required']">* Password is required</small>
-          <small class="text-danger" style="font-weight: bold;" *ngIf="_password?.errors?.['pattern']">* Invalid</small>
+        <div *ngIf="password?.invalid && password?.touched">
+          <small class="text-danger" style="font-weight: bold;" *ngIf="password?.errors?.['required']">* Password is required</small>
+          <small class="text-danger" style="font-weight: bold;" *ngIf="password?.errors?.['pattern']">* Invalid</small>
         </div>
         <label for="floatingPassword">Password</label>
       </div>

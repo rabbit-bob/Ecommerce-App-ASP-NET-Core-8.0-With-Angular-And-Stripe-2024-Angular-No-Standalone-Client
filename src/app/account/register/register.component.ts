@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AccountService } from '../account.service';
 import { Router } from '@angular/router';
 import { PasswordValidator } from '../../shared/validators/password.validator';
-import { EmailValidator } from '../../shared/validators/email.validator';
 
 /**
  * Component responsible for user registration functionality.
@@ -11,7 +10,7 @@ import { EmailValidator } from '../../shared/validators/email.validator';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrls: ['./register.component.scss'] // Poprawione style, teraz prawidłowe
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup; // Reactive form for capturing registration input fields
@@ -29,27 +28,26 @@ export class RegisterComponent implements OnInit {
   ) {
     this.registerForm = this.fb.group(
       {
-        firstName: ['', [Validators.required]], // Form control for first name with required validator
-        lastName: ['', [Validators.required]], // Form control for last name with required validator
+        displayName: ['', [Validators.required]], // Dodano kontrolkę dla nazwy użytkownika
         email: [
           '',
           [
             Validators.required,
-            Validators.pattern(EmailValidator.regex),
+            Validators.email, // Użyto walidatora emaila zamiast regex
           ],
         ], // Form control for email with required validator
         password: [
           '',
           [
             Validators.required,
-            Validators.pattern(PasswordValidator.regex),
+            Validators.pattern(PasswordValidator.regex), // Password pattern validator
           ],
         ], // Form control for password with required validator
         confirmPassword: [
           '',
           [
             Validators.required,
-            Validators.pattern(PasswordValidator.regex),
+            Validators.pattern(PasswordValidator.regex), // Password pattern validator for confirmation
           ],
         ], // Form control for confirm password with required validator
       },
@@ -62,19 +60,19 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {}
 
   // Getter methods for form controls
-  get _displayName() {
+  get displayName() {
     return this.registerForm.get('displayName');
   }
 
-  get _email() {
+  get email() {
     return this.registerForm.get('email');
   }
 
-  get _password() {
+  get password() {
     return this.registerForm.get('password');
   }
 
-  get _confirmPassword() {
+  get confirmPassword() {
     return this.registerForm.get('confirmPassword');
   }
 
