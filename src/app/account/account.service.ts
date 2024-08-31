@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, ReplaySubject } from 'rxjs';
 import { IUser } from '../shared/models/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -17,7 +17,7 @@ export class AccountService {
   _baseURL = environment.baseURL;
 
   // BehaviorSubject to manage the state of the current user
-  private currentUser = new BehaviorSubject<IUser | null>(null);
+  private currentUser = new ReplaySubject<IUser | null>(1);
 
   // Observable stream of the current user's state
   currentUser$ = this.currentUser.asObservable();
@@ -41,9 +41,9 @@ export class AccountService {
    * Returns the current user value from BehaviorSubject.
    * This method provides direct access to the user data stored in the currentUser BehaviorSubject.
    */
-  getCurrentUserValue(): IUser | null {
-    return this.currentUser.value;
-  }
+  // getCurrentUserValue(): IUser | null {
+  //   return this.currentUser.value;
+  // }
 
   /**
    * Loads the current user from the server using a provided token.
@@ -51,6 +51,10 @@ export class AccountService {
    * This method makes an HTTP GET request to fetch the current user data and updates the BehaviorSubject.
    */
   loadCurrentUser(token: string): Observable<IUser | null> {
+    if (token === null) {
+      this.currentUser.next(null);
+      return of(null);
+    }
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', `Bearer ${token}`);
 
@@ -83,7 +87,7 @@ export class AccountService {
           localStorage.setItem('token', user.token);
           // Update the current user state
           this.currentUser.next(user);
-          console.log('Current user after setting in BehaviorSubject:', this.currentUser.value);
+          // console.log('Current user after setting in BehaviorSubject:', this.currentUser.value);
         }
       })
     );
