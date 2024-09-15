@@ -7,8 +7,8 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { OrderSummaryComponent } from './components/order-summary/order-summary.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { CdkStepperModule } from '@angular/cdk/stepper';
-import { StepperComponent } from './components/stepper/stepper.component';
+import { CdkStepperModule } from '@angular/cdk/stepper'; // Importing Angular CDK Stepper Module
+import { StepperComponent } from './components/stepper/stepper.component'; // Stepper component for multi-step processes
 
 /**
  * Shared module that bundles commonly used components and modules across the application.
@@ -37,8 +37,10 @@ import { StepperComponent } from './components/stepper/stepper.component';
     OrderSummaryComponent,   // Exporting for usage in other modules
     ReactiveFormsModule,     // Exporting Reactive Forms module for usage in other modules
     BsDropdownModule,        // Exporting BsDropdownModule to make it available throughout the app
+    CdkStepperModule,        // Exporting CdkStepperModule for use in other modules
     StepperComponent         // Exporting StepperComponent for use in multi-step processes
   ]
 })
 export class SharedModule { }
+
 

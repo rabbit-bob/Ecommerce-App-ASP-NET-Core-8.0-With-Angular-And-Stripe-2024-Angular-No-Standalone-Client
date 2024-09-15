@@ -3,7 +3,13 @@
         <!-- Left side of the checkout process -->
         <div class="col-md-8">
             <!-- The main checkout process section (forms, details, etc.) would go here -->
-             <app-stepper></app-stepper> <!-- Stepper component for navigating checkout steps -->
+            <app-stepper [linearModeSelected]="false" #appStepper>
+                <!-- Stepper component for navigating checkout steps -->
+                <cdk-step [label]="'Address'">Step1</cdk-step>
+                <cdk-step [label]="'Delivery'">Step2</cdk-step>
+                <cdk-step [label]="'Review'">Step3</cdk-step>
+                <cdk-step [label]="'Payment'">Step4</cdk-step>
+            </app-stepper>
         </div>
         
         <!-- Right side order summary component -->
@@ -12,4 +18,5 @@
         </div>
     </div>
 </div>
+
 

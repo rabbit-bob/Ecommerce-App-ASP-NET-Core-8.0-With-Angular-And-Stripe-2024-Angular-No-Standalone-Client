@@ -1,0 +1,23 @@
+button.nav-link {
+    background-color: #f6f7f8; // Default background color
+    border-radius: 0;          // No border radius for a flat button look
+    border: none;              // No border around the button
+
+    &:focus {
+        background-color: red;  // Background color when focused
+        outline: none;          // Remove default outline
+    }
+
+    &.active:hover {
+        background-color: red;  // Change background on hover when active
+        color: white;           // White text on hover
+    }
+
+    &:active {
+        outline: none;          // Remove outline on active state
+    }
+
+    &.active:focus {
+        outline: none;          // Remove outline on focus when active
+    }
+}
