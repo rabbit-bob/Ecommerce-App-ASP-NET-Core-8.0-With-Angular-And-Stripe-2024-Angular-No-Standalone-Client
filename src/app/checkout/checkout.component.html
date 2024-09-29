@@ -6,7 +6,8 @@
             <app-stepper [linearModeSelected]="false" #appStepper>
                 <!-- Step for entering the address -->
                 <cdk-step [label]="'Address'">
-                    <app-checkout-address></app-checkout-address>
+                    <!-- Passing the checkoutForm to the address component -->
+                    <app-checkout-address [checkoutForm]="checkoutForm"></app-checkout-address>
                 </cdk-step>
                 <!-- Step for selecting the delivery method -->
                 <cdk-step [label]="'Delivery'">
@@ -22,10 +23,11 @@
                 </cdk-step>
             </app-stepper>
         </div>
-        
+
         <!-- Right side order summary component -->
         <div class="col-md-4">
             <app-order-summary></app-order-summary> <!-- Order summary widget -->
         </div>
     </div>
 </div>
+
