@@ -9,6 +9,7 @@ import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
+import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,7 @@ import { loadingInterceptor } from './core/interceptors/loading.interceptor';
     NgxSpinnerModule
   ],
   providers: [
-    provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor]))
+    provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor, jwtInterceptor]))
   ],
   bootstrap: [AppComponent]
 })

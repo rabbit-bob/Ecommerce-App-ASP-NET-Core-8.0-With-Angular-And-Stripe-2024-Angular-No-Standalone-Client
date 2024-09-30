@@ -11,7 +11,7 @@
                 </cdk-step>
                 <!-- Step for selecting the delivery method -->
                 <cdk-step [label]="'Delivery'">
-                    <app-checkout-delivery></app-checkout-delivery>
+                    <app-checkout-delivery [checkoutForm]="checkoutForm"></app-checkout-delivery> <!-- Form is passed down to the child component -->
                 </cdk-step>
                 <!-- Step for reviewing the order -->
                 <cdk-step [label]="'Review'">
@@ -31,3 +31,21 @@
     </div>
 </div>
 
+<!-- Updated delivery methods section with form bindings -->
+<div class="mt-4" [formGroup]="checkoutForm">
+    <div class="row" formGroupName="deliveryForm">
+        <div class="col-6 form-group" *ngFor="let item of deliveryMethods">
+            <input type="radio" 
+                id="{{item.id}}"
+                value="{{item.id}}"
+                formControlName="deliveryMethod"
+                class="custom-control-input"
+            >
+            <label for="{{item.id}}" class="custom-control-label">
+                <strong>{{item.shortName}} - {{item.price | currency}}</strong>
+                <br>
+                <span class="label-description">{{item.description}}</span>
+            </label>
+        </div>
+    </div>
+</div>

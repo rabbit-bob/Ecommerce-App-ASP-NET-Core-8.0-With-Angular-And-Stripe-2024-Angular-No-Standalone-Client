@@ -11,10 +11,10 @@ import { FormGroup } from '@angular/forms';
 export class CheckoutDeliveryComponent implements OnInit {
 
   // Delivery form passed from the parent component
-  @Input() deliveryForm: FormGroup = new FormGroup({});
+  @Input() checkoutForm: FormGroup = new FormGroup({});
 
   // List of delivery methods to be fetched and displayed
-  deliveryMethod: IDeliveryMethod[] = [];
+  deliveryMethods: IDeliveryMethod[] = [];
 
   constructor(private checkoutService: CheckoutService) { }
 
@@ -23,9 +23,9 @@ export class CheckoutDeliveryComponent implements OnInit {
     this.checkoutService.getDeliveryMethods().subscribe({
       next: (res: IDeliveryMethod[]) => {
         // Store the sorted delivery methods in the component
-        this.deliveryMethod = res;
+        this.deliveryMethods = res;
       },
-      error(err) {
+      error: (err) => {
         // Handle any errors that occur while fetching data
         console.error(err);
       },
