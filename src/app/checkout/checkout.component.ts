@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { IDeliveryMethod } from '../shared/models/deliveryMethod';
 
 @Component({
   selector: 'app-checkout',
@@ -9,6 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class CheckoutComponent implements OnInit {
 
   checkoutForm: FormGroup;
+  @Input() deliveryMethods: IDeliveryMethod[] = [];;
 
   /**
    * Constructor initializes the form builder service.
