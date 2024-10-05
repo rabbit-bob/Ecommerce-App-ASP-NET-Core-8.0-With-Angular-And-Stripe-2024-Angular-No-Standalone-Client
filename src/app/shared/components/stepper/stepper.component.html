@@ -1,19 +1,19 @@
 <div class="container">
     <ul class="nav nav-pills nav-justified">
-        <!-- Dynamically generate navigation items for each step -->
-        <li class="nav-item" *ngFor="let item of steps; let i = index">
-            <button (click)="onClick(i)" [class.active]="selectedIndex === i"
-                class="nav-link py-3 text-uppercase fw-bold d-md-block"
-            >
-                <!-- Display label for each step -->
-                {{item.label}}
-            </button>
-        </li>
+      <!-- Dynamically generate navigation items for each step -->
+      <li class="nav-item" *ngFor="let item of steps; let i = index">
+        <button (click)="onClick(i)" [class.active]="selectedIndex === i"
+          class="nav-link py-3 text-uppercase fw-bold d-md-block">
+          <!-- Display label and completion status for each step -->
+          {{item.label}} - {{item.completed}}
+        </button>
+      </li>
     </ul>
-
+  
     <!-- Display content of the currently selected step -->
     <div *ngIf="selected">
-        <ng-container [ngTemplateOutlet]="selected.content"></ng-container>
+      <ng-container [ngTemplateOutlet]="selected.content"></ng-container>
     </div>
-</div>
+  </div>
+  
 
