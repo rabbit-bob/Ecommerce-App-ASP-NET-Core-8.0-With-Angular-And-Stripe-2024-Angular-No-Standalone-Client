@@ -4,6 +4,7 @@ import { map, Observable, of, ReplaySubject } from 'rxjs';
 import { IUser } from '../shared/models/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { IAddress } from '../shared/models/address';
 
 /**
  * Service managing operations related to user accounts.
@@ -58,73 +59,21 @@ export class AccountService {
   }
 
   /**
-   * Authenticates a user with the provided credentials.
-   * @param value The login credentials.
-   * @returns An observable that resolves when the user is authenticated.
+   * Retrieves the user's saved address from the server.
+   * @returns Observable of the user's address.
    */
-  login(value: any): Observable<void> {
-    return this.http.post<IUser>(`${this._baseURL}Accounts/login`, value).pipe(
-      map((user: IUser) => {
-        if (user) {
-          console.log('User from server:', user);
-          // Store the authentication token in local storage
-          localStorage.setItem('token', user.token);
-          // Update the current user state
-          this.currentUser.next(user);
-        }
-      })
-    );
+  getUserAddress(): Observable<IAddress> {
+    return this.http.get<IAddress>(`${this._baseURL}Accounts/get-user-address`);
   }
 
   /**
-   * Initializes the current user by checking for a token in localStorage.
-   * If a token exists, it loads the user using the loadCurrentUser method.
+   * Updates the user's address on the server.
+   * @param address The address to be updated.
+   * @returns Observable of the updated address.
    */
-  initializeCurrentUser(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.loadCurrentUser(token).subscribe({
-        next: () => console.log('User loaded successfully'),
-        error: (err) => console.error('Error loading user:', err)
-      });
-    }
-  }
-
-  /**
-   * Registers a new user with the provided information.
-   * @param value The registration details.
-   * @returns An observable that resolves when the user is registered.
-   */
-  register(value: any): Observable<void> {
-    return this.http.post<IUser>(`${this._baseURL}Accounts/register`, value).pipe(
-      map((user: IUser) => {
-        if (user) {
-          // Store the authentication token in local storage upon registration
-          localStorage.setItem('token', user.token);
-          this.currentUser.next(user);
-        }
-      })
-    );
-  }
-
-  /**
-   * Logs out the current user, removing their authentication token and resetting user state.
-   */
-  logout(): void {
-    // Remove the authentication token from local storage
-    localStorage.removeItem('token');
-    // Reset the current user state to default values
-    this.currentUser.next(null);
-    // Navigate to the home page after logging out
-    this.router.navigateByUrl('/');
-  }
-
-  /**
-   * Checks if an email address is already registered.
-   * @param email The email address to check.
-   * @returns An observable indicating whether the email exists.
-   */
-  checkEmailExist(email: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this._baseURL}Accounts/check-email-exist?email=${email}`);
+  updateUserAddress(address: IAddress): Observable<IAddress> {
+    return this.http.post<IAddress>(`${this._baseURL}Accounts/update-user-address`, address);
   }
 }
+
+
