@@ -5,13 +5,16 @@
             <!-- Stepper component for navigating through the checkout steps -->
             <app-stepper [linearModeSelected]="false" #appStepper>
                 <!-- Step for entering the address -->
-                <cdk-step [label]="'Address'">
+                <!-- Binding the validity of the address form to the 'completed' property -->
+                <cdk-step [label]="'Address'" [completed]="checkoutForm.get('addressForm')?.valid">
                     <!-- Passing the checkoutForm to the address component -->
                     <app-checkout-address [checkoutForm]="checkoutForm"></app-checkout-address>
                 </cdk-step>
                 <!-- Step for selecting the delivery method -->
-                <cdk-step [label]="'Delivery'">
-                    <app-checkout-delivery [checkoutForm]="checkoutForm"></app-checkout-delivery> <!-- Form is passed down to the child component -->
+                <!-- Binding the validity of the delivery form to the 'completed' property -->
+                <cdk-step [label]="'Delivery'" [completed]="checkoutForm.get('deliveryForm')?.valid">
+                    <!-- Passing the checkoutForm to the delivery component -->
+                    <app-checkout-delivery [checkoutForm]="checkoutForm"></app-checkout-delivery>
                 </cdk-step>
                 <!-- Step for reviewing the order -->
                 <cdk-step [label]="'Review'">
@@ -32,8 +35,10 @@
 </div>
 
 <!-- Updated delivery methods section with form bindings -->
+<!-- Binding the 'deliveryForm' group to the delivery section for form control -->
 <div class="mt-4" [formGroup]="checkoutForm">
     <div class="row" formGroupName="deliveryForm">
+        <!-- Looping through available delivery methods and displaying radio buttons -->
         <div class="col-6 form-group" *ngFor="let item of deliveryMethods">
             <input type="radio" 
                 id="{{item.id}}"
@@ -41,6 +46,7 @@
                 formControlName="deliveryMethod"
                 class="custom-control-input"
             >
+            <!-- Label for delivery method including price and description -->
             <label for="{{item.id}}" class="custom-control-label">
                 <strong>{{item.shortName}} - {{item.price | currency}}</strong>
                 <br>
@@ -49,3 +55,4 @@
         </div>
     </div>
 </div>
+
