@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IDeliveryMethod } from '../shared/models/deliveryMethod';
-import { AccountService } from '../account/account.service';
 
 @Component({
   selector: 'app-checkout',
@@ -11,24 +10,23 @@ import { AccountService } from '../account/account.service';
 export class CheckoutComponent implements OnInit {
 
   checkoutForm: FormGroup;
-  @Input() deliveryMethods: IDeliveryMethod[] = [];
+  @Input() deliveryMethods: IDeliveryMethod[] = [];;
 
   /**
-   * Constructor initializes the form builder service and injects the account service.
-   * The account service is used to retrieve and manage user account information.
+   * Constructor initializes the form builder service.
+   * FormBuilder is used to create the checkout form structure.
    */
-  constructor(private fb: FormBuilder, private accountService: AccountService) {
+  constructor(private fb: FormBuilder) {
     // Initialize an empty form group upon component creation
     this.checkoutForm = this.fb.group({});
   }
 
   /**
    * Lifecycle hook called on component initialization.
-   * Calls the method to create the checkout form and retrieve the user's saved address.
+   * Calls the method to create the checkout form with necessary fields.
    */
   ngOnInit(): void {
     this.createCheckoutForm();
-    this.getAddressFormValues();
   }
 
   /**
@@ -57,21 +55,5 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  /**
-   * Retrieves the user's saved address and patches the address form with the retrieved data.
-   * This method is used to pre-fill the address form with the user's saved information.
-   */
-  getAddressFormValues() {
-    this.accountService.getUserAddress().subscribe({
-      next: (address) => {
-        this.checkoutForm.get('addressForm')?.patchValue(address);
-      },
-      error: (err) => {
-        console.log(err);
-      }
-    });
-  }
 }
-
-
 
