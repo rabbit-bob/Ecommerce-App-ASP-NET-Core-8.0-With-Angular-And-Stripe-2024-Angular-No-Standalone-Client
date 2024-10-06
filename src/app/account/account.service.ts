@@ -4,6 +4,7 @@ import { map, Observable, of, ReplaySubject } from 'rxjs';
 import { IUser } from '../shared/models/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { IAddress } from '../shared/models/address';
 
 /**
  * Service managing operations related to user accounts.
@@ -127,4 +128,22 @@ export class AccountService {
   checkEmailExist(email: string): Observable<boolean> {
     return this.http.get<boolean>(`${this._baseURL}Accounts/check-email-exist?email=${email}`);
   }
+
+  /**
+   * Retrieves the user's saved address from the server.
+   * @returns Observable of the user's address.
+   */
+  getUserAddress(): Observable<IAddress> {
+    return this.http.get<IAddress>(`${this._baseURL}Accounts/get-user-address`);
+  }
+  
+  /**
+    * Updates the user's address on the server.
+    * @param address The address to be updated.
+    * @returns Observable of the updated address.
+    */
+  updateUserAddress(address: IAddress): Observable<IAddress> {
+    return this.http.post<IAddress>(`${this._baseURL}Accounts/update-user-address`, address);
+  }
+  
 }

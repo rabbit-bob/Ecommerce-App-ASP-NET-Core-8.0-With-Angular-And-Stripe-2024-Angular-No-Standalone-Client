@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IDeliveryMethod } from '../shared/models/deliveryMethod';
+import { AccountService } from '../account/account.service';
 
 @Component({
   selector: 'app-checkout',
@@ -16,7 +17,7 @@ export class CheckoutComponent implements OnInit {
    * Constructor initializes the form builder service.
    * FormBuilder is used to create the checkout form structure.
    */
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private accountService: AccountService) {
     // Initialize an empty form group upon component creation
     this.checkoutForm = this.fb.group({});
   }
@@ -27,6 +28,7 @@ export class CheckoutComponent implements OnInit {
    */
   ngOnInit(): void {
     this.createCheckoutForm();
+    this.getAddressFormValues();
   }
 
   /**
@@ -52,6 +54,21 @@ export class CheckoutComponent implements OnInit {
       paymentForm: this.fb.group({
         nameOnCard: ['', Validators.required]
       })
+    });
+  }
+
+  /**
+   * Retrieves the user's saved address and patches the address form with the retrieved data.
+   * This method is used to pre-fill the address form with the user's saved information.
+   */
+  getAddressFormValues() {
+    this.accountService.getUserAddress().subscribe({
+      next: (address) => {
+        this.checkoutForm.get('addressForm')?.patchValue(address);
+      },
+      error: (err) => {
+        console.log(err);
+      }
     });
   }
 
