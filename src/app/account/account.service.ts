@@ -143,7 +143,7 @@ export class AccountService {
     * @returns Observable of the updated address.
     */
   updateUserAddress(address: IAddress): Observable<IAddress> {
-    return this.http.post<IAddress>(`${this._baseURL}Accounts/update-user-address`, address);
+    return this.http.put<IAddress>(`${this._baseURL}Accounts/update-user-address`, address);
   }
-  
+
 }

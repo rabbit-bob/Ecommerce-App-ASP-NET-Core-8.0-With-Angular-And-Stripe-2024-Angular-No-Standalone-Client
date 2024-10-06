@@ -1,7 +1,11 @@
 <div class="mt-4" [formGroup]="checkoutForm">
     <div class="d-flex justify-content-between align-items-center">
         <h4>Shipping Address</h4>
-        <button class="btn btn-outline-success">Save as default Address</button>
+        <button 
+            (click)="saveUserAddress()"
+            [disabled]="checkoutForm.get('addressForm')?.invalid || checkoutForm.get('addressForm')?.pristine"
+            class="btn btn-outline-success"
+        >Save as default Address</button>
     </div>
     <div class="row" formGroupName="addressForm">
         <!-- First name input field with validation feedback -->

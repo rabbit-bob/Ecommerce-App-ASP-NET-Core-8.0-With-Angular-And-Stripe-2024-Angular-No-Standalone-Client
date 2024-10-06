@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { AccountService } from '../../account/account.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-checkout-address',
@@ -11,9 +13,22 @@ export class CheckoutAddressComponent implements OnInit {
   // Accepting the checkoutForm as an input to this component
   @Input() checkoutForm: FormGroup = new FormGroup({});
 
-  constructor() { }
+  constructor(private accountService: AccountService, private toastr: ToastrService) { }
 
   ngOnInit(): void {}
+  
+  // Saves the user's address to the server
+  saveUserAddress() {
+    let currentAddress = this.checkoutForm.get('addressForm')?.value;
+    this.accountService.updateUserAddress(currentAddress).subscribe({
+      next: () => {
+        this.toastr.success('Updated successfully');
+      },
+      error: (err) => {
+        this.toastr.error('Error while updating', err);
+      },
+    })
+  }
 
   // Getter for the first name control from the address form group
   get _firstName() {
