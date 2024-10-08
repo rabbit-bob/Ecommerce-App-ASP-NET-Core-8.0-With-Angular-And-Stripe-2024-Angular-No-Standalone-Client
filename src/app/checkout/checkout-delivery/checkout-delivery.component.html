@@ -1,7 +1,9 @@
 <div class="mt-4" [formGroup]="checkoutForm">
     <div class="row" formGroupName="deliveryForm">
         <div class="col-6 form-group" *ngFor="let item of deliveryMethods">
-            <input type="radio" 
+            <input 
+                (click)="setShippingPrice(item)"
+                type="radio" 
                 id="{{item.id}}"
                 value="{{item.id}}"
                 formControlName="deliveryMethod"

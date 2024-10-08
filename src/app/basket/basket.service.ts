@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment.development';
 import { BehaviorSubject, map } from 'rxjs';
 import { Basket, IBasket, IBasketItem, IBasketTotals } from '../shared/models/basket';
 import { IProduct } from '../shared/models/product';
+import { IDeliveryMethod } from '../shared/models/deliveryMethod';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,9 @@ export class BasketService {
     id: '',
     basketItems: []
   });
-  
+
   basket$ = this.basketSource.asObservable();
+  shipping: number = 0;
 
   constructor(private http: HttpClient) {
     const basketId = localStorage.getItem('basket_id');
@@ -34,6 +36,10 @@ export class BasketService {
 
   basketTotal$ = this.basketTotalSource.asObservable();
 
+  /**
+   * Increments the quantity of the given basket item.
+   * @param item The item to increment in the basket.
+   */
   incrementBasketItemQuantity(item: IBasketItem) {
     const basket = this.getCurrentBasketValue();
     if (basket) {
@@ -46,7 +52,11 @@ export class BasketService {
       console.error('Basket is null');
     }
   }
-  
+
+  /**
+   * Decrements the quantity of the given basket item or removes it if quantity is 1.
+   * @param item The item to decrement in the basket.
+   */
   decrementBasketItemQuantity(item: IBasketItem) {
     const basket = this.getCurrentBasketValue();
     if (basket) {
@@ -63,7 +73,11 @@ export class BasketService {
       console.error('Basket is null');
     }
   }
-  
+
+  /**
+   * Removes an item from the basket.
+   * @param item The item to be removed from the basket.
+   */
   removeItemFromBasket(item: IBasketItem) {
     const basket = this.getCurrentBasketValue();
     if (basket) {
@@ -79,7 +93,11 @@ export class BasketService {
       console.error('Basket is null');
     }
   }
-  
+
+  /**
+   * Deletes the entire basket.
+   * @param basket The basket to be deleted.
+   */
   deleteBasket(basket: IBasket) {
     return this.http.delete(`${this.baseURL}Baskets/delete-basket-item/${basket.id}`)
       .subscribe({
@@ -100,11 +118,22 @@ export class BasketService {
         }
       });
   }
-  
 
+  /**
+   * Sets the shipping price based on the selected delivery method and recalculates the total.
+   * @param deliveryMethod The selected delivery method.
+   */
+  setShippingPrice(deliveryMethod: IDeliveryMethod) {
+    this.shipping = deliveryMethod.price;
+    this.calculateTotal();
+  }
+
+  /**
+   * Recalculates the basket totals including shipping, subtotal, and total.
+   */
   private calculateTotal() {
     const basket = this.getCurrentBasketValue();
-    const shipping = 0;
+    const shipping = this.shipping;
     const subtotal = basket!.basketItems.reduce((a, c) => {
       return (c.price * c.quantity) + a;
     }, 0);
@@ -112,6 +141,11 @@ export class BasketService {
     this.basketTotalSource.next({shipping, subtotal, total});
   }
 
+  /**
+   * Retrieves the basket by its ID.
+   * @param id The basket ID to retrieve.
+   * @returns An observable of the basket.
+   */
   getBasket(id: string) {
     return this.http.get<IBasket>(`${this.baseURL}Baskets/get-basket-item/${id}`).pipe(
       map((basket: IBasket) => {
@@ -122,11 +156,14 @@ export class BasketService {
     );
   }
 
+  /**
+   * Sets the current basket and stores its ID in local storage.
+   * @param basket The basket to set.
+   */
   setBasket(basket: IBasket) {
     this.http.post<IBasket>(`${this.baseURL}Baskets/update-basket`, basket).subscribe({
       next: (res: IBasket) => {
         this.basketSource.next(res);
-        console.log(res);
         this.calculateTotal();
         localStorage.setItem('basket_id', basket.id);
       },
@@ -136,10 +173,19 @@ export class BasketService {
     });
   }
 
+  /**
+   * Gets the current basket value.
+   * @returns The current basket or null if not available.
+   */
   getCurrentBasketValue(): IBasket | null {
     return this.basketSource.value;
   }
 
+  /**
+   * Adds an item to the basket or updates the quantity if it already exists.
+   * @param item The product to add to the basket.
+   * @param quantity The quantity of the product.
+   */
   addItemToBasket(item: IProduct, quantity: number = 1) {
     const itemToAdd: IBasketItem = this.mapProductItemToBasketItem(item, quantity);
     const basket = this.getCurrentBasketValue() ?? this.createBasket();
@@ -148,6 +194,13 @@ export class BasketService {
     return this.setBasket(basket);
   }
 
+  /**
+   * Adds or updates an item in the basket.
+   * @param basketItems The current basket items.
+   * @param itemToAdd The item to add or update.
+   * @param quantity The quantity of the item.
+   * @returns The updated basket items.
+   */
   private addOrUpdate(basketItems: IBasketItem[], itemToAdd: IBasketItem, quantity: number): IBasketItem[] {
     const index = basketItems.findIndex(i => i.id === itemToAdd.id);
     if (index === -1) {
@@ -159,6 +212,10 @@ export class BasketService {
     return basketItems;
   }
 
+  /**
+   * Creates a new basket and stores its ID in local storage.
+   * @returns The newly created basket.
+   */
   private createBasket(): IBasket {
     const basket = new Basket();
     localStorage.setItem('basket_id', basket.id);
@@ -166,10 +223,12 @@ export class BasketService {
     return basket;
   }
 
-  private storeBasketId(id: string) {
-    localStorage.setItem('basket_id', id);
-  }
-
+  /**
+   * Maps a product to a basket item.
+   * @param item The product to map.
+   * @param quantity The quantity of the product.
+   * @returns The mapped basket item.
+   */
   private mapProductItemToBasketItem(item: IProduct, quantity: number): IBasketItem {
     return {
       id: item.id,
@@ -181,15 +240,17 @@ export class BasketService {
     };
   }
 
-
+  /**
+   * Initializes the basket by loading its data from local storage or creating a new one.
+   */
   public initializeBasket() {
     let basketId = localStorage.getItem('basket_id');
-  
+
     if (!basketId) {
       basketId = uuidv4();
       localStorage.setItem('basket_id', basketId);
     }
-  
+
     this.getBasket(basketId).subscribe({
       next: (basket) => {
         console.log('Basket has been loaded - InitialBasket:', basket);
@@ -200,4 +261,5 @@ export class BasketService {
     });
   }
 }
+
 

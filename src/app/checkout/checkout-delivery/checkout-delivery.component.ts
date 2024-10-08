@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CheckoutService } from '../checkout.service'; // Import service to fetch delivery methods
 import { IDeliveryMethod } from '../../shared/models/deliveryMethod'; // Import delivery method interface
 import { FormGroup } from '@angular/forms';
+import { BasketService } from '../../basket/basket.service';
 
 @Component({
   selector: 'app-checkout-delivery',
@@ -16,7 +17,7 @@ export class CheckoutDeliveryComponent implements OnInit {
   // List of delivery methods to be fetched and displayed
   deliveryMethods: IDeliveryMethod[] = [];
 
-  constructor(private checkoutService: CheckoutService) { }
+  constructor(private checkoutService: CheckoutService, private basketService: BasketService) { }
 
   ngOnInit(): void {
     // Fetch delivery methods from the CheckoutService on component initialization
@@ -31,5 +32,11 @@ export class CheckoutDeliveryComponent implements OnInit {
       },
     });
   }
+
+  // Set the shipping price based on selected delivery method
+  setShippingPrice(deliveryMethod: IDeliveryMethod) {
+    this.basketService.setShippingPrice(deliveryMethod);
+  }
+
 }
 
