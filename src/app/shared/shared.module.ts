@@ -19,11 +19,12 @@ import { CheckoutSuccessComponent } from './components/checkout-success/checkout
  */
 @NgModule({
   declarations: [
-    PagingHeaderComponent,  // Pagination header component for displaying page headers
-    PagerComponent,         // Pager component for page navigation controls
-    OrderSummaryComponent,  // Component to display a summary of the order during checkout
-    StepperComponent,       // Stepper component for guiding users through multi-step processes
-    BasketSummaryComponent, CheckoutSuccessComponent  // Component for displaying and interacting with the shopping basket
+    PagingHeaderComponent,   // Pagination header component for displaying page headers
+    PagerComponent,          // Pager component for page navigation controls
+    OrderSummaryComponent,   // Component to display a summary of the order during checkout
+    StepperComponent,        // Stepper component for guiding users through multi-step processes
+    BasketSummaryComponent,  // Component for displaying and interacting with the shopping basket
+    CheckoutSuccessComponent // Component for displaying information when payment for order is successfully
   ],
   imports: [
     CommonModule,                    // Basic Angular directives and pipes
@@ -44,7 +45,8 @@ import { CheckoutSuccessComponent } from './components/checkout-success/checkout
     BsDropdownModule,        // Export BsDropdownModule to allow dropdown usage throughout the application
     CdkStepperModule,        // Export CDK Stepper module for step navigation across other modules
     StepperComponent,        // Export stepper component for multi-step processes in forms
-    BasketSummaryComponent   // Export Basket Summary Component for handling shopping basket functionality
+    BasketSummaryComponent,  // Export Basket Summary Component for handling shopping basket functionality
+    CheckoutSuccessComponent // Export Checkout Success Component for use in other modules
   ]
 })
 export class SharedModule { }

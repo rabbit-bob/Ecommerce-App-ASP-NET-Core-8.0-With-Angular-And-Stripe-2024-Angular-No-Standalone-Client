@@ -25,6 +25,10 @@ export class CheckoutPaymentComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Submits the order and handles the response from the server.
+   * Deletes the local basket if the order is successful.
+   */
   submitOrder() {
     const basket = this.basketService.getCurrentBasketValue();
 
@@ -47,7 +51,12 @@ export class CheckoutPaymentComponent implements OnInit {
       return;
     }
   }
-
+  
+  /**
+   * Maps basket data and form inputs into an order object.
+   * @param basket The current basket.
+   * @returns The order to be created.
+   */
   private getOrderToCreate(basket: IBasket) {
     return {
       basketId: basket.id,
