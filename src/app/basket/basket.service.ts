@@ -11,60 +11,60 @@ import { IDeliveryMethod } from '../shared/models/deliveryMethod';
   providedIn: 'root'
 })
 export class BasketService {
-
+  
   baseURL: string = environment.baseURL;
   private basketSource = new BehaviorSubject<IBasket>({
     id: '',
     basketItems: []
   });
-
+  
   basket$ = this.basketSource.asObservable();
   shipping: number = 0;
-
+  
   constructor(private http: HttpClient) {
     const basketId = localStorage.getItem('basket_id');
     if (basketId) {
       this.getBasket(basketId).subscribe();
     }
   }
-
+  
   private basketTotalSource = new BehaviorSubject<IBasketTotals>({
     shipping: 0,
     subtotal: 0,
     total: 0
   });
-
+  
   basketTotal$ = this.basketTotalSource.asObservable();
-
+  
   /**
    * Increments the quantity of the given basket item.
    * @param item The item to increment in the basket.
-   */
-  incrementBasketItemQuantity(item: IBasketItem) {
-    const basket = this.getCurrentBasketValue();
-    if (basket) {
-      const itemIndex = basket.basketItems.findIndex(x => x.id === item.id);
-      if (itemIndex !== -1) {
-        basket.basketItems[itemIndex].quantity++;
-        this.setBasket(basket);
+  */
+ incrementBasketItemQuantity(item: IBasketItem) {
+   const basket = this.getCurrentBasketValue();
+   if (basket) {
+     const itemIndex = basket.basketItems.findIndex(x => x.id === item.id);
+     if (itemIndex !== -1) {
+       basket.basketItems[itemIndex].quantity++;
+       this.setBasket(basket);
       }
     } else {
       console.error('Basket is null');
     }
   }
-
+  
   /**
    * Decrements the quantity of the given basket item or removes it if quantity is 1.
    * @param item The item to decrement in the basket.
-   */
-  decrementBasketItemQuantity(item: IBasketItem) {
-    const basket = this.getCurrentBasketValue();
-    if (basket) {
-      const itemIndex = basket.basketItems.findIndex(x => x.id === item.id);
-      if (itemIndex !== -1) {
-        if (basket.basketItems[itemIndex].quantity > 1) {
-          basket.basketItems[itemIndex].quantity--;
-          this.setBasket(basket);
+  */
+ decrementBasketItemQuantity(item: IBasketItem) {
+   const basket = this.getCurrentBasketValue();
+   if (basket) {
+     const itemIndex = basket.basketItems.findIndex(x => x.id === item.id);
+     if (itemIndex !== -1) {
+       if (basket.basketItems[itemIndex].quantity > 1) {
+         basket.basketItems[itemIndex].quantity--;
+         this.setBasket(basket);
         } else {
           this.removeItemFromBasket(item);
         }
@@ -73,18 +73,18 @@ export class BasketService {
       console.error('Basket is null');
     }
   }
-
+  
   /**
    * Removes an item from the basket.
    * @param item The item to be removed from the basket.
-   */
-  removeItemFromBasket(item: IBasketItem) {
-    const basket = this.getCurrentBasketValue();
-    if (basket) {
-      if (basket.basketItems.some(x => x.id === item.id)) {
-        basket.basketItems = basket.basketItems.filter(x => x.id !== item.id);
-        if (basket.basketItems.length > 0) {
-          this.setBasket(basket);
+  */
+ removeItemFromBasket(item: IBasketItem) {
+   const basket = this.getCurrentBasketValue();
+   if (basket) {
+     if (basket.basketItems.some(x => x.id === item.id)) {
+       basket.basketItems = basket.basketItems.filter(x => x.id !== item.id);
+       if (basket.basketItems.length > 0) {
+         this.setBasket(basket);
         } else {
           this.deleteBasket(basket);
         }
@@ -93,32 +93,49 @@ export class BasketService {
       console.error('Basket is null');
     }
   }
-
+  
   /**
    * Deletes the entire basket.
    * @param basket The basket to be deleted.
-   */
-  deleteBasket(basket: IBasket) {
-    return this.http.delete(`${this.baseURL}Baskets/delete-basket-item/${basket.id}`)
-      .subscribe({
-        next: () => {
-          this.basketSource.next({
-            id: '',
-            basketItems: []
-          });
-          this.basketTotalSource.next({
-            shipping: 0,
-            subtotal: 0,
-            total: 0
-          });
-          localStorage.removeItem('basket_id');
-        },
-        error: (err) => {
-          console.error(err);
-        }
-      });
+  */
+ deleteBasket(basket: IBasket) {
+   return this.http.delete(`${this.baseURL}Baskets/delete-basket-item/${basket.id}`)
+   .subscribe({
+     next: () => {
+       this.basketSource.next({
+         id: '',
+         basketItems: []
+        });
+        this.basketTotalSource.next({
+          shipping: 0,
+          subtotal: 0,
+          total: 0
+        });
+        localStorage.removeItem('basket_id');
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
   }
 
+  /**
+   * Deletes the local basket.
+   * @param basketId The id basket to be deleted locally.
+  */
+  deleteLocalBasket(basketId: string) {
+    localStorage.removeItem('basket_id');
+    this.basketSource.next({
+      id: '',
+      basketItems: []
+    });
+    this.basketTotalSource.next({
+      shipping: 0,
+      subtotal: 0,
+      total: 0
+    });
+  }
+  
   /**
    * Sets the shipping price based on the selected delivery method and recalculates the total.
    * @param deliveryMethod The selected delivery method.

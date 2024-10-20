@@ -8,7 +8,7 @@
 
       <div class="d-flex justify-content-between align-items-center">
         <div class="btn-group mt-2">
-          <button (click)="addItemToBasket()" type="button" class="btn btn-outline-danger fa fa-shopping-cart"></button>
+          <a (click)="addItemToBasket()" type="button" class="btn btn-outline-danger fa fa-shopping-cart"></a>
           <button type="button" routerLink="/shop/{{product?.id}}" routerLinkActive="router-link-active"  class="btn btn-outline-primary">View</button>
         </div>
       </div>

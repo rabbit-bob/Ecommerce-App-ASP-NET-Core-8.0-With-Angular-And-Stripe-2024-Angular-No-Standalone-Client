@@ -11,6 +11,7 @@ import { CdkStepperModule } from '@angular/cdk/stepper'; // Import Angular CDK S
 import { StepperComponent } from './components/stepper/stepper.component';
 import { BasketSummaryComponent } from './components/basket-summary/basket-summary.component'; // Import Basket Summary Component
 import { RouterModule } from '@angular/router';
+import { CheckoutSuccessComponent } from './components/checkout-success/checkout-success.component';
 
 /**
  * The shared module includes reusable components and third-party modules used across the application.
@@ -22,7 +23,7 @@ import { RouterModule } from '@angular/router';
     PagerComponent,         // Pager component for page navigation controls
     OrderSummaryComponent,  // Component to display a summary of the order during checkout
     StepperComponent,       // Stepper component for guiding users through multi-step processes
-    BasketSummaryComponent  // Component for displaying and interacting with the shopping basket
+    BasketSummaryComponent, CheckoutSuccessComponent  // Component for displaying and interacting with the shopping basket
   ],
   imports: [
     CommonModule,                    // Basic Angular directives and pipes

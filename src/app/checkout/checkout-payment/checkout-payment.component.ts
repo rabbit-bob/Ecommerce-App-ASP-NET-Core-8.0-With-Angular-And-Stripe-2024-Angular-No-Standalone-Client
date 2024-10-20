@@ -1,10 +1,59 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { CheckoutService } from '../checkout.service';
+import { BasketService } from '../../basket/basket.service';
+import { ToastrService } from 'ngx-toastr';
+import { IBasket } from '../../shared/models/basket';
+import { FormGroup } from '@angular/forms';
+import { NavigationExtras, Router } from '@angular/router';
+import { IOrder } from '../../shared/models/order';
 
 @Component({
   selector: 'app-checkout-payment',
   templateUrl: './checkout-payment.component.html',
   styleUrl: './checkout-payment.component.scss'
 })
-export class CheckoutPaymentComponent {
+export class CheckoutPaymentComponent implements OnInit {
+
+  @Input() checkoutForm: FormGroup = new FormGroup({});
+  constructor(
+    private checkoutService: CheckoutService,
+    private basketService: BasketService,
+    private toastr: ToastrService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+  }
+
+  submitOrder() {
+    const basket = this.basketService.getCurrentBasketValue();
+
+    if (basket) {
+      const orderToCreate = this.getOrderToCreate(basket);
+      this.checkoutService.createOrder(orderToCreate).subscribe({
+        next: ((order: IOrder) => {
+          this.toastr.success('Order Submit Successfully');
+          this.basketService.deleteLocalBasket(basket?.id);
+          const navigationExtras: NavigationExtras = {state: order};
+          this.router.navigate(['checkout/success'], navigationExtras);
+        }),
+        error: ((err: { message: string | undefined; }) => {
+          this.toastr.error(err.message);
+          console.error(err);
+        })
+      })
+    } else {
+      this.toastr.error('Basket is empty or not available.');
+      return;
+    }
+  }
+
+  private getOrderToCreate(basket: IBasket) {
+    return {
+      basketId: basket.id,
+      deliveryMethodId: this.checkoutForm.get('deliveryForm.deliveryMethod')?.value,
+      shipToAddress: this.checkoutForm.get('addressForm')?.value
+    }
+  }
 
 }
