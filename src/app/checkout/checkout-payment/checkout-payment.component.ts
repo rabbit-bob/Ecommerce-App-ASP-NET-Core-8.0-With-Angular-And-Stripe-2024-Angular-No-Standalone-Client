@@ -31,25 +31,23 @@ export class CheckoutPaymentComponent implements OnInit {
    */
   submitOrder() {
     const basket = this.basketService.getCurrentBasketValue();
-
-    if (basket) {
-      const orderToCreate = this.getOrderToCreate(basket);
-      this.checkoutService.createOrder(orderToCreate).subscribe({
-        next: ((order: IOrder) => {
-          this.toastr.success('Order Submit Successfully');
-          this.basketService.deleteLocalBasket(basket?.id);
-          const navigationExtras: NavigationExtras = {state: order};
-          this.router.navigate(['checkout/success'], navigationExtras);
-        }),
-        error: ((err: { message: string | undefined; }) => {
-          this.toastr.error(err.message);
-          console.error(err);
-        })
-      })
-    } else {
+    if (!basket) {
       this.toastr.error('Basket is empty or not available.');
       return;
     }
+    const orderToCreate = this.getOrderToCreate(basket);
+    this.checkoutService.createOrder(orderToCreate).subscribe({
+      next: (order: any) => {
+        this.toastr.success('Order submitted successfully');
+        this.basketService.deleteLocalBasket(basket.id);
+        const navigationExtras: NavigationExtras = { state: order };
+        this.router.navigate(['checkout/success'], navigationExtras);
+      },
+      error: ((err: { message: string | undefined; }) => {
+        this.toastr.error(err.message);
+        console.error(err);
+      })
+    })
   }
   
   /**

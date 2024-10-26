@@ -124,8 +124,7 @@ export class BasketService {
    * Removes basket data from local storage and resets basket observables.
    * @param basketId The ID of the basket to be deleted locally.
    */
-  deleteLocalBasket(basketId: string) {
-    localStorage.removeItem('basket_id');
+  deleteLocalBasket(id: string) {
     this.basketSource.next({
       id: '',
       basketItems: []
@@ -135,6 +134,7 @@ export class BasketService {
       subtotal: 0,
       total: 0
     });
+    localStorage.removeItem('basket_id');
   }
   
   /**
