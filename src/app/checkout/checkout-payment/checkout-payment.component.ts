@@ -26,8 +26,9 @@ export class CheckoutPaymentComponent implements OnInit {
   }
 
   /**
-   * Submits the order and handles the response from the server.
-   * Deletes the local basket if the order is successful.
+   * Submits the order by creating an order object from the current basket and form data,
+   * sending it to the server, and handling the response. 
+   * If successful, removes the local basket and navigates to the success page.
    */
   submitOrder() {
     const basket = this.basketService.getCurrentBasketValue();
@@ -37,12 +38,14 @@ export class CheckoutPaymentComponent implements OnInit {
     }
     const orderToCreate = this.getOrderToCreate(basket);
     this.checkoutService.createOrder(orderToCreate).subscribe({
-      next: (order: any) => {
+      next: (order => {
+        const typedOrder = order as IOrder;
         this.toastr.success('Order submitted successfully');
         this.basketService.deleteLocalBasket(basket.id);
-        const navigationExtras: NavigationExtras = { state: order };
+        const navigationExtras: NavigationExtras = { state: typedOrder };
         this.router.navigate(['checkout/success'], navigationExtras);
-      },
+        console.log(order);
+      }),
       error: ((err: { message: string | undefined; }) => {
         this.toastr.error(err.message);
         console.error(err);
@@ -51,9 +54,9 @@ export class CheckoutPaymentComponent implements OnInit {
   }
   
   /**
-   * Maps basket data and form inputs into an order object.
-   * @param basket The current basket.
-   * @returns The order to be created.
+   * Creates an order object based on the provided basket and form data.
+   * @param basket The current basket data.
+   * @returns An object containing details required to create an order.
    */
   private getOrderToCreate(basket: IBasket) {
     return {
