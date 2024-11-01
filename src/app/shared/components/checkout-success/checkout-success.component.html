@@ -4,5 +4,6 @@
     </div>
     <h2>Thank You, Your Order is Confirmed</h2>
     <p class="mb-4">Your Order will be Shipped as soon as possible</p>
-    <button class="btn btn-outline-success">View order</button>
+    <button class="btn btn-outline-success" *ngIf="order" routerLink="/orders/{{order.id}}">View order</button>
+    <button class="btn btn-outline-success" *ngIf="!order" routerLink="/orders">View order</button>
 </div>

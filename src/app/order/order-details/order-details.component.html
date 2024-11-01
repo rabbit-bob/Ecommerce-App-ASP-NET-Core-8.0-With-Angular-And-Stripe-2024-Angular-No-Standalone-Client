@@ -1,1 +1,37 @@
-<p>order-details works!</p>
+<div class="container mt-5">
+    <div class="row" *ngIf="order">
+      <div class="col-8">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="border-0 bg-light">Product</th>
+                <th scope="col" class="border-0 bg-light">Price</th>
+                <th scope="col" class="border-0 bg-light">Quantity</th>
+                <th scope="col" class="border-0 bg-light">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of order.orderItems">
+                <td><img [src]="item.pictureUrl" [alt]="item.productItemName" class="img-fluid" style="max-height: 50px;"> {{item.productItemName}}</td>
+                <td><strong>{{item.price | currency}}</strong></td>
+                <td><strong>{{item.quantity}}</strong></td>
+                <td><strong>{{item.price * item.quantity | currency}}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="bg-light px-4 py-3 text-uppercase font-weight-bold">Order summary</div>
+        <div class="p-4">
+          <ul class="list-unstyled mb-1">
+            <li class="d-flex justify-content-between py-3 border-bottom"><strong>Order subtotal</strong> <span>{{order.subtotal | currency}}</span></li>
+            <li class="d-flex justify-content-between py-3 border-bottom"><strong>Shipping</strong> <span>{{order.shippingPrice | currency}}</span></li>
+            <li class="d-flex justify-content-between py-3 border-bottom"><strong>Total</strong> <span>{{order.total | currency}}</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
