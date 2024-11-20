@@ -1,3 +1,48 @@
+<!-- Checkout form for payment details -->
+<div class="mt-5" [formGroup]="checkoutForm">
+    <div class="row">
+        <!-- Name on Card Field -->
+        <div class="form-group col-12 mb-2" formGroupName="paymentForm">
+            <div class="form-floating">
+                <!-- Input field for the cardholder's name -->
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="nameOnCard"
+                  id="floatingCcName"
+                  placeholder="Name on card"
+                  />
+                  <!-- [class.is-invalid]="checkoutForm.get('nameOnCard')?.invalid && checkoutForm.get('nameOnCard')?.touched"
+                  [class.is-valid]="checkoutForm.get('nameOnCard')?.valid" -->
+                <label for="floatingCcName">Name on Card</label>
+                <!-- <small class="text-danger" style="font-weight: bold;" [class.d-none]="checkoutForm.get('nameOnCard')?.valid || checkoutForm.get('nameOnCard')?.untouched">* Name on card is required</small> -->
+            </div>            
+        </div>
+
+        <!-- Credit Card Number Field -->
+        <div class="form-group col-6">
+            <div #cardNumber class="form-floating form-control py-3">
+                <!-- Placeholder for Stripe's Card Number Element -->
+            </div>
+        </div>
+
+        <!-- Credit Card Expiration Date Field -->
+        <div class="form-group col-3">
+            <div #cardExpiration class="form-floating form-control py-3">
+                <!-- Placeholder for Stripe's Card Expiration Element -->
+            </div>
+        </div>
+
+        <!-- Credit Card CVV Field -->
+        <div class="form-group col-3">
+            <div #cardCVV class="form-floating form-control py-3">
+                <!-- Placeholder for Stripe's Card CVV Element -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Buttons -->
 <div class="float-none d-flex justify-content-between flex-column flex-lg-row my-3">
     <button class="btn btn-outline-danger" cdkStepperPrevious>
         <i class="fa fa-angle-left mr-2"> Back to Review</i>
