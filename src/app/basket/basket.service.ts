@@ -126,6 +126,7 @@ export class BasketService {
     const basket = this.getCurrentBasketValue();
     if (!basket) return;
     basket.deliveryMethodId = deliveryMethod.id;
+    basket.shippingPrice = deliveryMethod.price;
 
     this.calculateTotals();
     this.setBasket(basket);
@@ -140,6 +141,7 @@ export class BasketService {
     return this.http.get<IBasket>(`${this.baseURL}Baskets/get-basket-item/${id}`).pipe(
       map((basket) => {
         this.basketSource.next(basket);
+        this.shipping = basket.shippingPrice ?? 0;
         this.calculateTotals();
       })
     );
@@ -188,7 +190,7 @@ export class BasketService {
       this.clearBasket();
     }
   }
-  
+
   /**
    * Creates a payment intent for the current basket.
    * Updates the basket in the state upon success.

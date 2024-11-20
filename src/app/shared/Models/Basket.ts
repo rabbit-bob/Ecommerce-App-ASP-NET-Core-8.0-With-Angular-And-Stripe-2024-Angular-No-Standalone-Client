@@ -31,6 +31,12 @@ export interface IBasket {
    * If not set, the default delivery method is used.
    */
   deliveryMethodId?: number;
+  
+    /**
+   * The shipping price for the basket.
+   * Optional, defaults to 0 if not provided.
+   */
+  shippingPrice?: number;
 }
 
 /**
