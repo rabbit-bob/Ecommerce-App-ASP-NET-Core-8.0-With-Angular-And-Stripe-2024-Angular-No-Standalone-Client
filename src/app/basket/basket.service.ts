@@ -122,11 +122,11 @@ export class BasketService {
    * @param deliveryMethod The selected delivery method.
    */
   setShippingPrice(deliveryMethod: IDeliveryMethod): void {
+    this.shipping = deliveryMethod.price;
     const basket = this.getCurrentBasketValue();
     if (!basket) return;
-
-    this.shipping = deliveryMethod.price;
     basket.deliveryMethodId = deliveryMethod.id;
+
     this.calculateTotals();
     this.setBasket(basket);
   }
@@ -188,6 +188,44 @@ export class BasketService {
       this.clearBasket();
     }
   }
+  
+  /**
+   * Creates a payment intent for the current basket.
+   * Updates the basket in the state upon success.
+   * @returns An observable containing the updated basket.
+   */
+  createPaymentIntent() {
+    const basketId = this.getCurrentBasketValue()?.id;
+
+    if (!basketId) {
+      console.error('Basket ID is missing!');
+      return;
+    }
+
+    return this.http.post<IBasket>(`${this.baseURL}Payments/${basketId}`, {}).pipe(
+      map((basket: IBasket) => {
+        this.basketSource.next(basket);
+        console.log('Updated Basket:', this.getCurrentBasketValue());
+      })
+    );
+  }
+  
+  /**
+   * Retrieves the current basket value.
+   * @returns The current basket or null if not set.
+  */
+ getCurrentBasketValue(): IBasket | null {
+   return this.basketSource.value;
+  }
+  
+  /**
+   * Public method to initialize the basket.
+   * Calls the internal method to load the basket from local storage.
+  */
+ initializeBasket(): void {
+   this.initializeBasketFromLocalStorage();
+  }
+  
   /**
    * Calculates the basket totals (shipping, subtotal, total).
    */
@@ -199,22 +237,6 @@ export class BasketService {
     const total = subtotal + this.shipping;
 
     this.basketTotalSource.next({ shipping: this.shipping, subtotal, total });
-  }
-
-  /**
-   * Retrieves the current basket value.
-   * @returns The current basket or null if not set.
-   */
-  getCurrentBasketValue(): IBasket | null {
-    return this.basketSource.value;
-  }
-  
-  /**
-   * Public method to initialize the basket.
-   * Calls the internal method to load the basket from local storage.
-   */
-  initializeBasket(): void {
-    this.initializeBasketFromLocalStorage();
   }
 
   /**
@@ -271,7 +293,7 @@ export class BasketService {
       basketId = uuidv4();
       localStorage.setItem('basket_id', basketId);
     }
-    
+
     this.getBasket(basketId).subscribe({
       next: () => {},
       error: (err) => {
