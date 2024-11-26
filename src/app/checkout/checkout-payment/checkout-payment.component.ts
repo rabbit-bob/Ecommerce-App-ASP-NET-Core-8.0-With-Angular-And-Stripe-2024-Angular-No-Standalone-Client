@@ -51,6 +51,8 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Initializes Stripe and its elements after the view is fully loaded.
+   * This method loads Stripe, sets up the elements for the credit card number, expiration date, 
+   * and CVV, and mounts them to the DOM.
    */
   async ngAfterViewInit() {
     this.stripe = await this.stripePromise;
@@ -80,6 +82,8 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Destroys Stripe Elements to clean up resources when the component is destroyed.
+   * This method ensures that Stripe elements are cleaned up properly when the component 
+   * is no longer in use.
    */
   ngOnDestroy() {
     this.cardNumber?.destroy();
@@ -127,7 +131,7 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
       shipToAddress: this.checkoutForm.get('addressForm')?.value,
     };
   }
-  
+
   /**
    * Updates the card error state with the error message, if any.
    * This method handles errors triggered by the card input fields.
@@ -136,7 +140,4 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   private updateCardError(event: { error?: { message: string } }) {
     this.cardError = event.error ? event.error.message : null;
   }
-  
 }
-
-
