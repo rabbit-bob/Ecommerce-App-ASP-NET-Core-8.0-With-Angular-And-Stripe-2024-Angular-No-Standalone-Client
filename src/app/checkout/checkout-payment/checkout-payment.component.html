@@ -11,11 +11,14 @@
                   formControlName="nameOnCard"
                   id="floatingCcName"
                   placeholder="Name on card"
+                  [class.is-invalid]="checkoutForm.get('nameOnCard')?.invalid && checkoutForm.get('nameOnCard')?.touched"
+                  [class.is-valid]="checkoutForm.get('nameOnCard')?.valid"
                   />
-                  <!-- [class.is-invalid]="checkoutForm.get('nameOnCard')?.invalid && checkoutForm.get('nameOnCard')?.touched"
-                  [class.is-valid]="checkoutForm.get('nameOnCard')?.valid" -->
                 <label for="floatingCcName">Name on Card</label>
-                <!-- <small class="text-danger" style="font-weight: bold;" [class.d-none]="checkoutForm.get('nameOnCard')?.valid || checkoutForm.get('nameOnCard')?.untouched">* Name on card is required</small> -->
+                <!-- Error message for Name on Card if invalid -->
+                <small class="text-danger fw-bold" *ngIf="checkoutForm.get('paymentForm.nameOnCard')?.invalid && checkoutForm.get('paymentForm.nameOnCard')?.touched">
+                    * Name on Card Required!
+                </small>
             </div>            
         </div>
 
@@ -24,6 +27,10 @@
             <div #cardNumber class="form-floating form-control py-3">
                 <!-- Placeholder for Stripe's Card Number Element -->
             </div>
+            <!-- Error message for Card Number input if invalid -->
+            <small *ngIf="cardError" class="text-danger fw-bold">
+                * {{cardError}}!
+            </small>
         </div>
 
         <!-- Credit Card Expiration Date Field -->
@@ -51,3 +58,4 @@
         Submit Order <i class="fa fa-angle-right"></i>
     </button>
 </div>
+
