@@ -18,7 +18,7 @@
                 </cdk-step>
                 <!-- Step for reviewing the order -->
                 <cdk-step [label]="'Review'">
-                    <app-checkout-review></app-checkout-review>
+                    <app-checkout-review [appStepper]="appStepper"></app-checkout-review>
                 </cdk-step>
                 <!-- Step for making the payment -->
                 <cdk-step [label]="'Payment'">

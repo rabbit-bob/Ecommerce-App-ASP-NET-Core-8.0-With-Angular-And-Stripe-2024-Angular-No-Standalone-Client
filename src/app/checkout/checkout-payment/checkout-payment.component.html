@@ -11,12 +11,13 @@
                   formControlName="nameOnCard"
                   id="floatingCcName"
                   placeholder="Name on card"
-                  [class.is-invalid]="checkoutForm.get('nameOnCard')?.invalid && checkoutForm.get('nameOnCard')?.touched"
-                  [class.is-valid]="checkoutForm.get('nameOnCard')?.valid"
+                  [class.is-invalid]="checkoutForm.get('paymentForm.nameOnCard')?.invalid && checkoutForm.get('paymentForm.nameOnCard')?.touched"
+                  [class.is-valid]="checkoutForm.get('paymentForm.nameOnCard')?.valid"
                   />
                 <label for="floatingCcName">Name on Card</label>
                 <!-- Error message for Name on Card if invalid -->
-                <small class="text-danger fw-bold" *ngIf="checkoutForm.get('paymentForm.nameOnCard')?.invalid && checkoutForm.get('paymentForm.nameOnCard')?.touched">
+                <small class="text-danger fw-bold" 
+                    [class.d-none]="checkoutForm.get('paymentForm.nameOnCard')?.valid || checkoutForm.get('paymentForm.nameOnCard')?.untouched">
                     * Name on Card Required!
                 </small>
             </div>            
@@ -24,7 +25,7 @@
 
         <!-- Credit Card Number Field -->
         <div class="form-group col-6">
-            <div #cardNumber class="form-floating form-control py-3">
+            <div #cardNumber class="form-floating form-control py-3" [class.is-invalid]="cardError === null">
                 <!-- Placeholder for Stripe's Card Number Element -->
             </div>
             <!-- Error message for Card Number input if invalid -->
@@ -35,14 +36,14 @@
 
         <!-- Credit Card Expiration Date Field -->
         <div class="form-group col-3">
-            <div #cardExpiration class="form-floating form-control py-3">
+            <div #cardExpiration class="form-floating form-control py-3" [class.is-invalid]="cardError === null">
                 <!-- Placeholder for Stripe's Card Expiration Element -->
             </div>
         </div>
 
         <!-- Credit Card CVV Field -->
         <div class="form-group col-3">
-            <div #cardCVV class="form-floating form-control py-3">
+            <div #cardCVV class="form-floating form-control py-3" [class.is-invalid]="cardError === null">
                 <!-- Placeholder for Stripe's Card CVV Element -->
             </div>
         </div>
