@@ -109,30 +109,42 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
       next: (order) => {
         const typedOrder = order as IOrder;
         this.toastr.success('Order submitted successfully');
+
         if (basket.clientSecret && this.cardNumber) {
           // Confirm payment with Stripe
           this.stripe?.confirmCardPayment(basket.clientSecret, {
             payment_method: {
-              card: this.cardNumber as StripeCardNumberElement ,
+              card: this.cardNumber as StripeCardNumberElement,
               billing_details: {
-                name: this.checkoutForm.get('paymentForm.nameOnCard')?.value || ''
-              }
-            }
+                name: this.checkoutForm.get('paymentForm.nameOnCard')?.value || '',
+              },
+            },
           }).then(result => {
             console.log(result);
+
             if (result.paymentIntent) {
+              // Payment succeeded, delete local basket and navigate to success page
               this.basketService.deleteLocalBasket(basket.id);
               const navigationExtras: NavigationExtras = { state: typedOrder };
-              this.router.navigate(['checkout/success'], navigationExtras);            
+              this.router.navigate(['checkout/success'], navigationExtras);
+            } else if (result.error) {
+              // Handle specific error message from Stripe
+              this.toastr.error(result.error.message || 'An unknown payment error occurred.');
             } else {
-              this.toastr.error('Payment Error');
+              // General error fallback
+              this.toastr.error('Payment confirmation failed.');
             }
-          });       
+          }).catch(error => {
+            // Handle errors during the Stripe API call
+            console.error('Error during payment confirmation:', error);
+            this.toastr.error('An error occurred while processing the payment.');
+          });
         } else {
-          this.toastr.error('Client secret or card number is missing!')
+          this.toastr.error('Client secret or card number is missing!');
         }
       },
       error: (err: { message: string | undefined }) => {
+        // Handle errors during order creation
         this.toastr.error(err.message || 'An error occurred during order submission.');
         console.error(err);
       },
