@@ -21,6 +21,7 @@ import { IBasket } from '../../shared/models/basket';
 import { FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { IOrder } from '../../shared/models/order';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-checkout-payment',
@@ -32,7 +33,7 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   @ViewChild('cardExpiration', { static: true }) cardExpirationElement!: ElementRef;
   @ViewChild('cardCVV', { static: true }) cardCVVElement!: ElementRef;
 
-  private stripePromise = loadStripe('your-public-key-here');
+  private stripePromise = loadStripe(environment.stripe_publishable_key);
   stripe: Stripe | null = null;
   elements: StripeElements | null = null;
   cardNumber: StripeCardNumberElement | null = null;
@@ -92,9 +93,9 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Submits the order by creating an order object from the current basket and form data,
-   * sending it to the server, and handling the response.
-   * If successful, removes the local basket and navigates to the success page.
+   * Submits the order and processes payment using Stripe.
+   * This method creates an order object, submits it to the server,
+   * and handles the payment confirmation process through Stripe.
    */
   submitOrder() {
     const basket = this.basketService.getCurrentBasketValue();
@@ -108,9 +109,28 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
       next: (order) => {
         const typedOrder = order as IOrder;
         this.toastr.success('Order submitted successfully');
-        this.basketService.deleteLocalBasket(basket.id);
-        const navigationExtras: NavigationExtras = { state: typedOrder };
-        this.router.navigate(['checkout/success'], navigationExtras);
+        if (basket.clientSecret && this.cardNumber) {
+          // Confirm payment with Stripe
+          this.stripe?.confirmCardPayment(basket.clientSecret, {
+            payment_method: {
+              card: this.cardNumber as StripeCardNumberElement ,
+              billing_details: {
+                name: this.checkoutForm.get('paymentForm.nameOnCard')?.value || ''
+              }
+            }
+          }).then(result => {
+            console.log(result);
+            if (result.paymentIntent) {
+              this.basketService.deleteLocalBasket(basket.id);
+              const navigationExtras: NavigationExtras = { state: typedOrder };
+              this.router.navigate(['checkout/success'], navigationExtras);            
+            } else {
+              this.toastr.error('Payment Error');
+            }
+          });       
+        } else {
+          this.toastr.error('Client secret or card number is missing!')
+        }
       },
       error: (err: { message: string | undefined }) => {
         this.toastr.error(err.message || 'An error occurred during order submission.');
@@ -133,9 +153,8 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Updates the card error state with the error message, if any.
-   * This method handles errors triggered by the card input fields.
-   * @param event The event object containing the error message.
+   * Updates the card error state based on the Stripe element's validation result.
+   * @param event The event object containing the error message, if any.
    */
   private updateCardError(event: { error?: { message: string } }) {
     this.cardError = event.error ? event.error.message : null;
