@@ -20,7 +20,6 @@ import { ToastrService } from 'ngx-toastr';
 import { IBasket } from '../../shared/models/basket';
 import { FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
-import { IOrder } from '../../shared/models/order';
 import { environment } from '../../../environments/environment.development';
 
 @Component({
@@ -40,6 +39,7 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   cardExpiration: StripeCardExpiryElement | null = null;
   cardCVV: StripeCardCvcElement | null = null;
   cardError: string | null = null;
+  loading: boolean = false;
 
   @Input() checkoutForm: FormGroup = new FormGroup({});
 
@@ -52,7 +52,7 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Initializes Stripe and its elements after the view is fully loaded.
-   * This method loads Stripe, sets up the elements for the credit card number, expiration date, 
+   * This method loads Stripe, sets up the elements for the credit card number, expiration date,
    * and CVV, and mounts them to the DOM.
    */
   async ngAfterViewInit() {
@@ -83,7 +83,7 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Destroys Stripe Elements to clean up resources when the component is destroyed.
-   * This method ensures that Stripe elements are cleaned up properly when the component 
+   * This method ensures that Stripe elements are cleaned up properly when the component
    * is no longer in use.
    */
   ngOnDestroy() {
@@ -94,61 +94,74 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Submits the order and processes payment using Stripe.
-   * This method creates an order object, submits it to the server,
-   * and handles the payment confirmation process through Stripe.
+   * This method handles order creation and Stripe payment confirmation
+   * while managing the loading state and error feedback.
    */
-  submitOrder() {
+  async submitOrder() {
+    this.loading = true;
     const basket = this.basketService.getCurrentBasketValue();
     if (!basket) {
       this.toastr.error('Basket is empty or not available.');
+      this.loading = false;
       return;
     }
 
+    try {
+      const createdOrder = await this.createOrder(basket);
+      const paymentResult = await this.confirmPaymentWithStripe(basket);
+
+      if (paymentResult?.paymentIntent) {
+        // Payment succeeded, delete local basket and navigate to success page
+        this.basketService.deleteLocalBasket(basket.id);
+        const navigationExtras: NavigationExtras = { state: createdOrder };
+        this.router.navigate(['checkout/success'], navigationExtras);
+      } else {
+        this.handlePaymentError(paymentResult?.error?.message);
+      }
+    } catch (error) {
+      console.error('Error during order submission or payment:', error);
+      this.toastr.error('An error occurred while processing your order.');
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  /**
+   * Confirms the payment using Stripe's API.
+   * @param basket The current basket data containing the client secret.
+   * @returns The result of the Stripe payment confirmation.
+   */
+  private async confirmPaymentWithStripe(basket: IBasket) {
+    if (basket.clientSecret && this.cardNumber) {
+      return this.stripe?.confirmCardPayment(basket.clientSecret, {
+        payment_method: {
+          card: this.cardNumber as StripeCardNumberElement,
+          billing_details: {
+            name: this.checkoutForm.get('paymentForm.nameOnCard')?.value || '',
+          },
+        },
+      });
+    }
+    return null;
+  }
+
+  /**
+   * Creates an order using the checkout service.
+   * @param basket The current basket data.
+   * @returns The created order object.
+   */
+  private async createOrder(basket: IBasket) {
     const orderToCreate = this.getOrderToCreate(basket);
-    this.checkoutService.createOrder(orderToCreate).subscribe({
-      next: (order) => {
-        const typedOrder = order as IOrder;
-        this.toastr.success('Order submitted successfully');
+    return this.checkoutService.createOrder(orderToCreate).toPromise();
+  }
 
-        if (basket.clientSecret && this.cardNumber) {
-          // Confirm payment with Stripe
-          this.stripe?.confirmCardPayment(basket.clientSecret, {
-            payment_method: {
-              card: this.cardNumber as StripeCardNumberElement,
-              billing_details: {
-                name: this.checkoutForm.get('paymentForm.nameOnCard')?.value || '',
-              },
-            },
-          }).then(result => {
-            console.log(result);
-
-            if (result.paymentIntent) {
-              // Payment succeeded, delete local basket and navigate to success page
-              this.basketService.deleteLocalBasket(basket.id);
-              const navigationExtras: NavigationExtras = { state: typedOrder };
-              this.router.navigate(['checkout/success'], navigationExtras);
-            } else if (result.error) {
-              // Handle specific error message from Stripe
-              this.toastr.error(result.error.message || 'An unknown payment error occurred.');
-            } else {
-              // General error fallback
-              this.toastr.error('Payment confirmation failed.');
-            }
-          }).catch(error => {
-            // Handle errors during the Stripe API call
-            console.error('Error during payment confirmation:', error);
-            this.toastr.error('An error occurred while processing the payment.');
-          });
-        } else {
-          this.toastr.error('Client secret or card number is missing!');
-        }
-      },
-      error: (err: { message: string | undefined }) => {
-        // Handle errors during order creation
-        this.toastr.error(err.message || 'An error occurred during order submission.');
-        console.error(err);
-      },
-    });
+  /**
+   * Handles errors encountered during payment confirmation.
+   * @param errorMessage The error message from Stripe, if any.
+   */
+  private handlePaymentError(errorMessage?: string) {
+    const message = errorMessage || 'An unknown payment error occurred.';
+    this.toastr.error(message);
   }
 
   /**
@@ -172,3 +185,4 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
     this.cardError = event.error ? event.error.message : null;
   }
 }
+
