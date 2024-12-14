@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AccountService } from '../../account/account.service';
 import { ToastrService } from 'ngx-toastr';
+import { IAddress } from '../../shared/models/address';
 
 @Component({
   selector: 'app-checkout-address',
@@ -19,15 +20,23 @@ export class CheckoutAddressComponent implements OnInit {
   
   // Saves the user's address to the server
   saveUserAddress() {
+    // Get the current address from the address form
     let currentAddress = this.checkoutForm.get('addressForm')?.value;
+    
+    // Call the account service to update the user's address
     this.accountService.updateUserAddress(currentAddress).subscribe({
-      next: () => {
-        this.toastr.success('Updated successfully');
-      },
-      error: (err) => {
-        this.toastr.error('Error while updating', err);
-      },
-    })
+        next: (address: IAddress) => {
+            // Notify the user about the successful update
+            this.toastr.success('Updated successfully');
+            
+            // Reset the address form with the updated address data
+            this.checkoutForm.get('addressForm')?.reset(address);
+        },
+        error: (err) => {
+            // Notify the user about the error
+            this.toastr.error('Error while updating', err);
+        },
+    });
   }
 
   // Getter for the first name control from the address form group

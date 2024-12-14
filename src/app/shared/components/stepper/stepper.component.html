@@ -1,11 +1,13 @@
 <div class="container">
     <ul class="nav nav-pills nav-justified">
       <!-- Dynamically generate navigation items for each step -->
+      <!-- Disable all stepper navigation buttons to prevent manual step skipping -->
       <li class="nav-item" *ngFor="let item of steps; let i = index">
         <button (click)="onClick(i)" [class.active]="selectedIndex === i"
+          [disabled]="true"
           class="nav-link py-3 text-uppercase fw-bold d-md-block">
-          <!-- Display label and completion status for each step -->
-          {{item.label}} - {{item.completed}}
+          <!-- Display label for each step -->
+          {{item.label}}
         </button>
       </li>
     </ul>

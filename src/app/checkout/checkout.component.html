@@ -3,7 +3,8 @@
         <!-- Left side of the checkout process -->
         <div class="col-md-8">
             <!-- Stepper component for navigating through the checkout steps -->
-            <app-stepper [linearModeSelected]="false" #appStepper>
+            <!-- Enable linear mode for the stepper to enforce sequential navigation -->
+            <app-stepper [linearModeSelected]="true" #appStepper>
                 <!-- Step for entering the address -->
                 <!-- Binding the validity of the address form to the 'completed' property -->
                 <cdk-step [label]="'Address'" [completed]="checkoutForm.get('addressForm')?.valid">

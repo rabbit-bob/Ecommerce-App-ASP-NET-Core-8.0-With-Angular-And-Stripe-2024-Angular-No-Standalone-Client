@@ -20,4 +20,9 @@ button.nav-link {
     &.active:focus {
         outline: none;          // Remove outline on focus when active
     }
+
+    &:disabled:not(.active) {
+        color: #333;
+        font-weight: bold;
+    }
 }
