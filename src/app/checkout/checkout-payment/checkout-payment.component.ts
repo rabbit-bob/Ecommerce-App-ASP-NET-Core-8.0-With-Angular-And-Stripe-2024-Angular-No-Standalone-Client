@@ -41,6 +41,11 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   cardError: string | null = null;
   loading: boolean = false;
 
+  // Tracks the validity of individual card fields
+  cardNumberValid: boolean = false;
+  cardExpirationValid: boolean = false;
+  cardCVVValid: boolean = false;
+
   @Input() checkoutForm: FormGroup = new FormGroup({});
 
   constructor(
@@ -181,8 +186,27 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
    * Updates the card error state based on the Stripe element's validation result.
    * @param event The event object containing the error message, if any.
    */
-  private updateCardError(event: { error?: { message: string } }) {
+  private updateCardError(event: {
+    complete: boolean;
+    elementType: any; error?: { message: string } 
+}) {
+    // Log the event for debugging purposes
+    console.log(event);
+
+    // Update the card error message if an error exists
     this.cardError = event.error ? event.error.message : null;
+
+    // Update the validity status for the specific card field
+    switch (event.elementType) {
+      case 'cardNumber':
+        this.cardNumberValid = event.complete;
+        break;
+      case 'cardExpiration':
+        this.cardExpirationValid = event.complete;
+        break;
+      case 'cardCVV':
+        this.cardCVVValid = event.complete;
+        break;
+    }
   }
 }
-
